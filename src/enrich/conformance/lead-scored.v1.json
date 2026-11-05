@@ -1,0 +1,1727 @@
+{
+  "conformance": "enrich.lead-scored",
+  "version": "1.0.0",
+  "status": "ruled",
+  "basis": [
+    "the score fact's producer invariants, which its published schema cannot state",
+    "the composite's arithmetic: contributions summed in double precision in the rubric's declared order, rounded once, half-to-even, to 4 places, and banded on the rounded value"
+  ],
+  "rule": "Two kinds of vector. An input with score is a lead.scored.v1 payload; expect is holds, or the first rule it breaks, in the order schema, no_null, no_empty_string, non_negative, outcome_fields, grades. schema: typeRef.version is an integer, the one typed field these vectors check. no_null: no value is null. no_empty_string: no present string is empty. non_negative: ceiling is at least 0 and composite, a decimal string of scale 4, is at least 0.0000. outcome_fields: scored has a band and no disqualifier; disqualified has no band, composite 0.0000 and a disqualifier; operatorCompletion is present exactly when scoredBy is operator_completed. grades: each criterion is graded at most once and is not also pending an operator; confidence is within 0.0000 to 1.0000, present on every engine grade and absent on every operator grade. An input with composition is the arithmetic: composite is the sum of grade times weight over the accepted grades, in the criteria's declared order, in IEEE-754 double precision, rounded once half-to-even on the double's exact binary value to 4 places; band is the first band in declared order whose threshold the rounded composite is at least. The weights and thresholds in these vectors are synthetic.",
+  "vectors": [
+    {
+      "id": "S-01",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "an engine score with its band, two accepted engine grades"
+    },
+    {
+      "id": "S-02",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "disqualified",
+          "composite": "0.0000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0002",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z",
+          "disqualifier": {
+            "id": "dq-competitor",
+            "reason": "a competitor of the sender",
+            "evaluatedBy": "engine",
+            "inferredInputs": []
+          }
+        }
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "a disqualification before grading: no band, composite 0.0000, no grades, a disqualifier with no inferred inputs"
+    },
+    {
+      "id": "S-03",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "operator_completed",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "grade": 2,
+              "accepted": true,
+              "evidencedBy": "operator",
+              "evidenceRefs": []
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0003",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z",
+          "operatorCompletion": {
+            "causedBy": "cmd-0001",
+            "completedAt": "2026-11-04T10:00:00.000Z"
+          }
+        }
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "an operator-completed score: operatorCompletion present, the operator's grade with no confidence; its own resultId, since an engine score and its completion are two facts"
+    },
+    {
+      "id": "S-04",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": null
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "violates": "no_null"
+      },
+      "why": "a null value (lead.companyDomain)"
+    },
+    {
+      "id": "S-05",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "violates": "no_empty_string"
+      },
+      "why": "an empty string (resultId)"
+    },
+    {
+      "id": "S-06",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": -1,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "violates": "non_negative"
+      },
+      "why": "a negative ceiling"
+    },
+    {
+      "id": "S-07",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "-0.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "violates": "non_negative"
+      },
+      "why": "a composite below 0.0000"
+    },
+    {
+      "id": "S-08",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "violates": "outcome_fields"
+      },
+      "why": "scored without a band"
+    },
+    {
+      "id": "S-09",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "disqualified",
+          "composite": "0.0000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0002",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z",
+          "disqualifier": {
+            "id": "dq-competitor",
+            "reason": "a competitor of the sender",
+            "evaluatedBy": "engine",
+            "inferredInputs": []
+          },
+          "band": "pursue"
+        }
+      },
+      "expect": {
+        "violates": "outcome_fields"
+      },
+      "why": "disqualified with a band"
+    },
+    {
+      "id": "S-10",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "disqualified",
+          "composite": "1.0000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0002",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z",
+          "disqualifier": {
+            "id": "dq-competitor",
+            "reason": "a competitor of the sender",
+            "evaluatedBy": "engine",
+            "inferredInputs": []
+          }
+        }
+      },
+      "expect": {
+        "violates": "outcome_fields"
+      },
+      "why": "disqualified with a composite other than 0.0000"
+    },
+    {
+      "id": "S-11",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "disqualified",
+          "composite": "0.0000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0002",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "violates": "outcome_fields"
+      },
+      "why": "disqualified without a disqualifier"
+    },
+    {
+      "id": "S-12",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z",
+          "disqualifier": {
+            "id": "dq-competitor",
+            "reason": "a competitor of the sender",
+            "evaluatedBy": "engine",
+            "inferredInputs": []
+          }
+        }
+      },
+      "expect": {
+        "violates": "outcome_fields"
+      },
+      "why": "scored with a disqualifier, which is absent when scored"
+    },
+    {
+      "id": "S-13",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "operator_completed",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "violates": "outcome_fields"
+      },
+      "why": "operator_completed without operatorCompletion"
+    },
+    {
+      "id": "S-14",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z",
+          "operatorCompletion": {
+            "causedBy": "cmd-0001",
+            "completedAt": "2026-11-04T10:00:00.000Z"
+          }
+        }
+      },
+      "expect": {
+        "violates": "outcome_fields"
+      },
+      "why": "an engine score with operatorCompletion"
+    },
+    {
+      "id": "S-15",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ]
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "violates": "grades"
+      },
+      "why": "an engine grade without a confidence: the published grammar cannot refuse it, so the producer must"
+    },
+    {
+      "id": "S-16",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "operator",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "violates": "grades"
+      },
+      "why": "an operator grade carrying a confidence"
+    },
+    {
+      "id": "S-17",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "1.2000"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "violates": "grades"
+      },
+      "why": "a confidence outside 0.0000 to 1.0000"
+    },
+    {
+      "id": "S-18",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "violates": "grades"
+      },
+      "why": "a criterion graded twice"
+    },
+    {
+      "id": "S-19",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": [
+              "timing"
+            ]
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "violates": "grades"
+      },
+      "why": "a criterion pending an operator also listed in grades"
+    },
+    {
+      "id": "S-20",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": "1"
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "violates": "schema"
+      },
+      "why": "the type's version given as the string \"1\": it is an integer, and a runtime emitting a string would match no calibration"
+    },
+    {
+      "id": "S-21",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "violates": "no_empty_string"
+      },
+      "why": "an empty string nested in the grader: no present string is empty, at any depth"
+    },
+    {
+      "id": "S-22",
+      "input": {
+        "score": {
+          "tenantId": "tenant-0001",
+          "lead": {
+            "globalContactId": "gc-0001",
+            "emailAccountKey": "ada@example.com",
+            "companyDomain": "example.com"
+          },
+          "outcome": "scored",
+          "band": "pursue",
+          "composite": "17.5000",
+          "ceiling": 20,
+          "pendingOperatorReview": {
+            "disqualifierIds": [],
+            "criterionIds": []
+          },
+          "scoredBy": "engine",
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 4,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-fit-0001"
+              ],
+              "confidence": "-0.0001"
+            },
+            {
+              "criterionId": "timing",
+              "grade": 3,
+              "accepted": true,
+              "evidencedBy": "engine",
+              "evidenceRefs": [
+                "ev-timing-0001"
+              ],
+              "confidence": "0.7500"
+            }
+          ],
+          "grader": {
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "gradeSchema": "grade-fixture@1.0.0",
+            "runtime": "production"
+          },
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "typeRef": {
+            "id": "icp_score",
+            "version": 1
+          },
+          "resultId": "result-0001",
+          "asOf": "2026-11-04T09:00:00.000Z",
+          "computedAt": "2026-11-04T09:00:01.000Z"
+        }
+      },
+      "expect": {
+        "violates": "grades"
+      },
+      "why": "an engine grade's confidence below 0.0000: the decimal grammar admits the sign, and the rule bounds confidence within 0.0000 to 1.0000"
+    },
+    {
+      "id": "V-1",
+      "input": {
+        "composition": {
+          "criteria": [
+            {
+              "id": "fit",
+              "weight": 0.03125
+            }
+          ],
+          "bands": [
+            {
+              "id": "pursue",
+              "threshold": "1.0000"
+            },
+            {
+              "id": "hold",
+              "threshold": "0.0000"
+            }
+          ],
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 1,
+              "accepted": true
+            }
+          ]
+        }
+      },
+      "expect": {
+        "composite": "0.0312",
+        "band": "hold"
+      },
+      "why": "the exact double sum 0.03125 is a tie at the fifth decimal: half-to-even writes 0.0312, where toFixed would write 0.0313"
+    },
+    {
+      "id": "V-2",
+      "input": {
+        "composition": {
+          "criteria": [
+            {
+              "id": "fit",
+              "weight": 17.99996
+            }
+          ],
+          "bands": [
+            {
+              "id": "pursue",
+              "threshold": "18.0000"
+            },
+            {
+              "id": "nurture",
+              "threshold": "10.0000"
+            },
+            {
+              "id": "hold",
+              "threshold": "0.0000"
+            }
+          ],
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 1,
+              "accepted": true
+            }
+          ]
+        }
+      },
+      "expect": {
+        "composite": "18.0000",
+        "band": "pursue"
+      },
+      "why": "a sum within 0.00005 below a band boundary: the band compares the rounded composite, so 17.99996 rounds to 18.0000 and clears the top band"
+    },
+    {
+      "id": "V-3",
+      "input": {
+        "composition": {
+          "criteria": [
+            {
+              "id": "fit",
+              "weight": 17.99995
+            }
+          ],
+          "bands": [
+            {
+              "id": "pursue",
+              "threshold": "18.0000"
+            },
+            {
+              "id": "nurture",
+              "threshold": "10.0000"
+            },
+            {
+              "id": "hold",
+              "threshold": "0.0000"
+            }
+          ],
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 1,
+              "accepted": true
+            }
+          ]
+        }
+      },
+      "expect": {
+        "composite": "17.9999",
+        "band": "nurture"
+      },
+      "why": "the double nearest 17.99995 is exactly 17.99994999999999834..., below the tie: the rounding reads the exact binary value, so 17.9999 and the band below the top; rounding the shortest decimal form writes 18.0000 and the top band"
+    },
+    {
+      "id": "V-4",
+      "input": {
+        "composition": {
+          "criteria": [
+            {
+              "id": "fit",
+              "weight": 0.09375
+            }
+          ],
+          "bands": [
+            {
+              "id": "pursue",
+              "threshold": "18.0000"
+            },
+            {
+              "id": "nurture",
+              "threshold": "10.0000"
+            },
+            {
+              "id": "hold",
+              "threshold": "0.0000"
+            }
+          ],
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 1,
+              "accepted": true
+            }
+          ]
+        }
+      },
+      "expect": {
+        "composite": "0.0938",
+        "band": "hold"
+      },
+      "why": "0.09375 is exactly 3/32, a true tie with an odd fourth digit: half-to-even writes 0.0938, half-down 0.0937; with V-1 both one-sided tie rules fail"
+    },
+    {
+      "id": "V-5",
+      "input": {
+        "composition": {
+          "criteria": [
+            {
+              "id": "fit",
+              "weight": 1.00005
+            }
+          ],
+          "bands": [
+            {
+              "id": "pursue",
+              "threshold": "18.0000"
+            },
+            {
+              "id": "nurture",
+              "threshold": "10.0000"
+            },
+            {
+              "id": "hold",
+              "threshold": "0.0000"
+            }
+          ],
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 1,
+              "accepted": true
+            }
+          ]
+        }
+      },
+      "expect": {
+        "composite": "1.0001",
+        "band": "hold"
+      },
+      "why": "the double nearest 1.00005 is exactly 1.00005000000000010..., above the tie: 1.0001; rounding the shortest decimal form half-to-even writes 1.0000, V-3's fault from the other side"
+    },
+    {
+      "id": "V-6",
+      "input": {
+        "composition": {
+          "criteria": [
+            {
+              "id": "fit",
+              "weight": 1
+            },
+            {
+              "id": "timing",
+              "weight": 1
+            }
+          ],
+          "bands": [
+            {
+              "id": "pursue",
+              "threshold": "5.0000"
+            },
+            {
+              "id": "hold",
+              "threshold": "0.0000"
+            }
+          ],
+          "grades": [
+            {
+              "criterionId": "fit",
+              "grade": 3,
+              "accepted": true
+            },
+            {
+              "criterionId": "timing",
+              "grade": 4,
+              "accepted": false
+            }
+          ]
+        }
+      },
+      "expect": {
+        "composite": "3.0000",
+        "band": "hold"
+      },
+      "why": "the composite is over the accepted grades only: counting the unaccepted one would give 7.0000 and the band pursue"
+    }
+  ]
+}

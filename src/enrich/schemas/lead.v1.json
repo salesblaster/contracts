@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:enrich:lead:v1",
+  "type": "object",
+  "properties": {
+    "globalContactId": {
+      "type": "string"
+    },
+    "emailAccountKey": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "companyName": {
+      "type": "string"
+    },
+    "companyDomain": {
+      "type": "string"
+    },
+    "linkedinUrl": {
+      "type": "string"
+    }
+  },
+  "required": ["globalContactId", "emailAccountKey", "email"],
+  "additionalProperties": false
+}

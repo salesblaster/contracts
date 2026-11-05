@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:core:port-error:v1",
+  "type": "object",
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": ["unavailable", "request_failed"]
+    },
+    "message": {
+      "type": "string"
+    }
+  },
+  "required": ["kind", "message"],
+  "additionalProperties": false
+}

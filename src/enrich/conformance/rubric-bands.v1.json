@@ -1,0 +1,242 @@
+{
+  "conformance": "enrich.rubric-bands",
+  "version": "1.0.0",
+  "status": "ruled",
+  "basis": [
+    "the labels a rubric version declares, as a campaign's policy reads them: labels only, never a threshold, a weight or an anchor"
+  ],
+  "rule": "An input is a RubricBands record; expect is holds, or the first rule it breaks, in this order. schemaVersion: it is the integer 1. labels_only: every band is a string, and no key names a threshold, a weight or an anchor (threshold, thresholds, weight, weights, anchor, anchors). closed: the record has exactly the keys schemaVersion, rubricRef and bands, and rubricRef exactly id and version. bands_valid: bands is non-empty, its ids are unique, and none is empty.",
+  "vectors": [
+    {
+      "id": "RB-01",
+      "input": {
+        "rubricBands": {
+          "schemaVersion": 1,
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "bands": [
+            "pursue",
+            "nurture",
+            "hold"
+          ]
+        }
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "three labels in declared order"
+    },
+    {
+      "id": "RB-02",
+      "input": {
+        "rubricBands": {
+          "schemaVersion": 1,
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "bands": [
+            "pursue"
+          ]
+        }
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "one label is enough"
+    },
+    {
+      "id": "RB-03",
+      "input": {
+        "rubricBands": {
+          "schemaVersion": 1,
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "bands": [
+            "pursue",
+            "disqualify"
+          ]
+        }
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "a band named disqualify is a label like any other, never the outcome"
+    },
+    {
+      "id": "RB-04",
+      "input": {
+        "rubricBands": {
+          "schemaVersion": 2,
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "bands": [
+            "pursue",
+            "nurture",
+            "hold"
+          ]
+        }
+      },
+      "expect": {
+        "violates": "schemaVersion"
+      },
+      "why": "schemaVersion other than 1"
+    },
+    {
+      "id": "RB-05",
+      "input": {
+        "rubricBands": {
+          "schemaVersion": 1,
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "bands": []
+        }
+      },
+      "expect": {
+        "violates": "bands_valid"
+      },
+      "why": "an empty band set"
+    },
+    {
+      "id": "RB-06",
+      "input": {
+        "rubricBands": {
+          "schemaVersion": 1,
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "bands": [
+            "pursue",
+            "hold",
+            "pursue"
+          ]
+        }
+      },
+      "expect": {
+        "violates": "bands_valid"
+      },
+      "why": "a duplicated band"
+    },
+    {
+      "id": "RB-07",
+      "input": {
+        "rubricBands": {
+          "schemaVersion": 1,
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "bands": [
+            "pursue",
+            ""
+          ]
+        }
+      },
+      "expect": {
+        "violates": "bands_valid"
+      },
+      "why": "an empty band id"
+    },
+    {
+      "id": "RB-08",
+      "input": {
+        "rubricBands": {
+          "schemaVersion": 1,
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "bands": [
+            "pursue",
+            "nurture",
+            "hold"
+          ],
+          "description": "the fixture rubric's bands"
+        }
+      },
+      "expect": {
+        "violates": "closed"
+      },
+      "why": "an extra field"
+    },
+    {
+      "id": "RB-09",
+      "input": {
+        "rubricBands": {
+          "schemaVersion": 1,
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "bands": [
+            {
+              "id": "pursue",
+              "threshold": "18.0000"
+            },
+            "hold"
+          ]
+        }
+      },
+      "expect": {
+        "violates": "labels_only"
+      },
+      "why": "a threshold-shaped field: a band carries its threshold"
+    },
+    {
+      "id": "RB-10",
+      "input": {
+        "rubricBands": {
+          "schemaVersion": 1,
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0"
+          },
+          "bands": [
+            "pursue",
+            "nurture",
+            "hold"
+          ],
+          "thresholds": [
+            "18.0000",
+            "0.0000"
+          ]
+        }
+      },
+      "expect": {
+        "violates": "labels_only"
+      },
+      "why": "a threshold-shaped field: the thresholds beside the labels"
+    },
+    {
+      "id": "RB-11",
+      "input": {
+        "rubricBands": {
+          "schemaVersion": 1,
+          "rubricRef": {
+            "id": "rubric-fixture",
+            "version": "1.0.0",
+            "label": "Fixture rubric"
+          },
+          "bands": [
+            "pursue",
+            "nurture",
+            "hold"
+          ]
+        }
+      },
+      "expect": {
+        "violates": "closed"
+      },
+      "why": "an extra key inside rubricRef: the record is closed at every level"
+    }
+  ]
+}

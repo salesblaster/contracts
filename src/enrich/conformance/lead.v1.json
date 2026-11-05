@@ -1,0 +1,153 @@
+{
+  "conformance": "enrich.lead",
+  "version": "1.0.0",
+  "status": "ruled",
+  "basis": [
+    "the published lead shape's producer invariants"
+  ],
+  "rule": "no_null: no value is null (no field here is nullable). no_empty_string: no present string is empty. email_at_sign: email contains an at sign. key_matches_email: emailAccountKey equals core.email-account-key of email, the key of the address as sourced (so it is also a fixed point of the key: lowercased, trimmed, a plus tag collapsed). A runtime passes when its check of the input gives expect: holds, or the first rule broken, in the order no_null, no_empty_string, email_at_sign, key_matches_email.",
+  "vectors": [
+    {
+      "id": "L-01",
+      "input": {
+        "globalContactId": "gc-0001",
+        "emailAccountKey": "ada@example.com",
+        "email": "Ada+acme@Example.com"
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "the three required fields, every optional field absent"
+    },
+    {
+      "id": "L-02",
+      "input": {
+        "globalContactId": "gc-0001",
+        "emailAccountKey": "ada@example.com",
+        "email": "Ada+acme@Example.com",
+        "firstName": "Ada",
+        "lastName": "Lovelace",
+        "title": "Head of Events",
+        "phone": "+44 20 0000 0000",
+        "companyName": "Example Ltd",
+        "companyDomain": "example.com",
+        "linkedinUrl": "https://www.linkedin.com/in/example"
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "every optional field present and non-empty"
+    },
+    {
+      "id": "L-03",
+      "input": {
+        "globalContactId": "gc-0001",
+        "emailAccountKey": "ada@example.com",
+        "email": "Ada+acme@Example.com",
+        "title": null
+      },
+      "expect": {
+        "violates": "no_null"
+      },
+      "why": "a null where the field is not nullable"
+    },
+    {
+      "id": "L-04",
+      "input": {
+        "globalContactId": "gc-0001",
+        "emailAccountKey": "ada@example.com",
+        "email": "Ada+acme@Example.com",
+        "title": ""
+      },
+      "expect": {
+        "violates": "no_empty_string"
+      },
+      "why": "an empty string; a value not held is absent"
+    },
+    {
+      "id": "L-05",
+      "input": {
+        "globalContactId": "gc-0001",
+        "emailAccountKey": "ada@example.com",
+        "email": "Ada+acme@Example.com",
+        "phone": ""
+      },
+      "expect": {
+        "violates": "no_empty_string"
+      },
+      "why": "an empty string in another optional field"
+    },
+    {
+      "id": "L-06",
+      "input": {
+        "globalContactId": "gc-0001",
+        "emailAccountKey": "Ada@example.com",
+        "email": "Ada+acme@Example.com"
+      },
+      "expect": {
+        "violates": "key_matches_email"
+      },
+      "why": "the key is not lowercased"
+    },
+    {
+      "id": "L-07",
+      "input": {
+        "globalContactId": "gc-0001",
+        "emailAccountKey": " ada@example.com",
+        "email": "Ada+acme@Example.com"
+      },
+      "expect": {
+        "violates": "key_matches_email"
+      },
+      "why": "the key is not trimmed"
+    },
+    {
+      "id": "L-08",
+      "input": {
+        "globalContactId": "gc-0001",
+        "emailAccountKey": "ada+acme@example.com",
+        "email": "Ada+acme@Example.com"
+      },
+      "expect": {
+        "violates": "key_matches_email"
+      },
+      "why": "the key keeps a plus tag: core.email-account-key collapses it, so a check that only lowercases and trims would let this pass"
+    },
+    {
+      "id": "L-09",
+      "input": {
+        "globalContactId": "gc-0001",
+        "emailAccountKey": "ada@example.com",
+        "email": "ada.example.com"
+      },
+      "expect": {
+        "violates": "email_at_sign"
+      },
+      "why": "the address has no at sign"
+    },
+    {
+      "id": "L-10",
+      "input": {
+        "globalContactId": "gc-0001",
+        "emailAccountKey": "ada@example.com",
+        "email": "grace@example.com"
+      },
+      "expect": {
+        "violates": "key_matches_email"
+      },
+      "why": "a valid key, but taken from another address: the key is the key of this lead's email, not merely a key"
+    },
+    {
+      "id": "L-11",
+      "input": {
+        "globalContactId": "gc-0001",
+        "emailAccountKey": "zoe@example.com",
+        "email": "Zoë@example.com"
+      },
+      "expect": {
+        "violates": "key_matches_email"
+      },
+      "why": "an accent-folded key: core.email-account-key lowercases and keeps the accent, so the key of Zoë@example.com is zoë@example.com"
+    }
+  ]
+}

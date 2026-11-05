@@ -1,0 +1,347 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:enrich:lead-scored:v1",
+  "type": "object",
+  "properties": {
+    "tenantId": {
+      "type": "string"
+    },
+    "lead": {
+      "type": "object",
+      "properties": {
+        "globalContactId": {
+          "type": "string"
+        },
+        "emailAccountKey": {
+          "type": "string"
+        },
+        "companyDomain": {
+          "type": "string"
+        }
+      },
+      "required": ["globalContactId", "emailAccountKey"],
+      "additionalProperties": false
+    },
+    "outcome": {
+      "type": "string",
+      "enum": ["scored", "disqualified"]
+    },
+    "band": {
+      "type": "string"
+    },
+    "composite": {
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)\\.[0-9]{4}$"
+    },
+    "ceiling": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    },
+    "disqualifier": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "evaluatedBy": {
+          "type": "string",
+          "enum": ["engine", "operator", "either"]
+        },
+        "inferredInputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field": {
+                "type": "string"
+              },
+              "resultId": {
+                "type": "string"
+              },
+              "graderConfiguration": {
+                "type": "object",
+                "properties": {
+                  "enrichmentType": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "version": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": ["id", "version"],
+                    "additionalProperties": false
+                  },
+                  "rubric": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "version": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["id", "version"],
+                    "additionalProperties": false
+                  },
+                  "model": {
+                    "type": "string"
+                  },
+                  "prompt": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "version": {
+                        "type": "string"
+                      },
+                      "contentHash": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["name", "version", "contentHash"],
+                    "additionalProperties": false
+                  },
+                  "runtime": {
+                    "type": "string",
+                    "enum": ["development", "production"]
+                  }
+                },
+                "required": [
+                  "enrichmentType",
+                  "rubric",
+                  "model",
+                  "prompt",
+                  "runtime"
+                ],
+                "additionalProperties": false
+              },
+              "grades": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "criterionId": {
+                      "type": "string"
+                    },
+                    "grade": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "confidence": {
+                      "type": "string",
+                      "pattern": "^-?(0|[1-9][0-9]*)\\.[0-9]{4}$"
+                    },
+                    "accepted": {
+                      "type": "boolean"
+                    },
+                    "evidencedBy": {
+                      "type": "string",
+                      "enum": ["engine", "operator"]
+                    },
+                    "evidenceRefs": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "criterionId",
+                    "grade",
+                    "accepted",
+                    "evidencedBy",
+                    "evidenceRefs"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["field", "resultId", "graderConfiguration", "grades"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["id", "reason", "evaluatedBy", "inferredInputs"],
+      "additionalProperties": false
+    },
+    "pendingOperatorReview": {
+      "type": "object",
+      "properties": {
+        "disqualifierIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "criterionIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["disqualifierIds", "criterionIds"],
+      "additionalProperties": false
+    },
+    "scoredBy": {
+      "type": "string",
+      "enum": ["engine", "operator_completed"]
+    },
+    "operatorCompletion": {
+      "type": "object",
+      "properties": {
+        "causedBy": {
+          "type": "string"
+        },
+        "completedAt": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+        }
+      },
+      "required": ["causedBy", "completedAt"],
+      "additionalProperties": false
+    },
+    "grades": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "criterionId": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "confidence": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]*)\\.[0-9]{4}$"
+          },
+          "accepted": {
+            "type": "boolean"
+          },
+          "evidencedBy": {
+            "type": "string",
+            "enum": ["engine", "operator"]
+          },
+          "evidenceRefs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "criterionId",
+          "grade",
+          "accepted",
+          "evidencedBy",
+          "evidenceRefs"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "grader": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "type": "string"
+        },
+        "prompt": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            },
+            "contentHash": {
+              "type": "string"
+            }
+          },
+          "required": ["name", "version", "contentHash"],
+          "additionalProperties": false
+        },
+        "runtime": {
+          "type": "string",
+          "enum": ["development", "production"]
+        },
+        "gradeSchema": {
+          "type": "string"
+        }
+      },
+      "required": ["model", "prompt", "runtime", "gradeSchema"],
+      "additionalProperties": false
+    },
+    "rubricRef": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "version"],
+      "additionalProperties": false
+    },
+    "typeRef": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": ["id", "version"],
+      "additionalProperties": false
+    },
+    "resultId": {
+      "type": "string"
+    },
+    "asOf": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+    },
+    "computedAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+    }
+  },
+  "required": [
+    "tenantId",
+    "lead",
+    "outcome",
+    "composite",
+    "ceiling",
+    "pendingOperatorReview",
+    "scoredBy",
+    "grades",
+    "grader",
+    "rubricRef",
+    "typeRef",
+    "resultId",
+    "asOf",
+    "computedAt"
+  ],
+  "additionalProperties": false
+}

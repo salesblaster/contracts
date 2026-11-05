@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:core:type-key:v1",
+  "type": "string",
+  "pattern": "^[a-z][a-z0-9_]{0,62}$"
+}

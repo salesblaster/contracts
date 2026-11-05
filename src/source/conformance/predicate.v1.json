@@ -1,0 +1,1186 @@
+{
+  "conformance": "source.predicate",
+  "version": "1.1.0",
+  "status": "ruled",
+  "basis": [
+    "SalesBlaster's segment predicates as its compiler evaluates them in DuckDB, with TRY_CAST for every typed read",
+    "the predicate tree: filter, and, or and not, over dimension catalog 1.0.0"
+  ],
+  "rule": "Three-valued (Kleene) logic. A comparison over an absent key, a null value, or a value that does not convert to the dimension's type (TRY_CAST gives NULL) is unknown. not(unknown) is unknown. and: any false gives false, else any unknown gives unknown, else true. or: any true gives true, else any unknown gives unknown, else false. exists never gives unknown: exists=false is true exactly when the key is absent or null, exists=true is its negation. An unknown at the top is refused with reason unevaluable_value and never survives. An empty string never reaches the evaluator: admission maps it to absent.",
+  "vectors": [
+    {
+      "id": "P4-R1",
+      "input": {
+        "predicate": {
+          "type": "or",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "headquarters_country": "GB",
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "pass"
+      }
+    },
+    {
+      "id": "P4-R2",
+      "input": {
+        "predicate": {
+          "type": "or",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "headquarters_country": "US",
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "pass"
+      }
+    },
+    {
+      "id": "P4-R3",
+      "input": {
+        "predicate": {
+          "type": "or",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "pass"
+      }
+    },
+    {
+      "id": "P4-R4",
+      "input": {
+        "predicate": {
+          "type": "or",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "headquarters_country": null,
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "pass"
+      }
+    },
+    {
+      "id": "P4-R6",
+      "input": {
+        "predicate": {
+          "type": "or",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "headquarters_country": "GB"
+        }
+      },
+      "expect": {
+        "verdict": "pass"
+      }
+    },
+    {
+      "id": "P4-R8",
+      "input": {
+        "predicate": {
+          "type": "or",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "employee_count": 100
+        }
+      },
+      "expect": {
+        "verdict": "refused",
+        "reason": "unevaluable_value"
+      }
+    },
+    {
+      "id": "P4-R9",
+      "input": {
+        "predicate": {
+          "type": "or",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {}
+      },
+      "expect": {
+        "verdict": "refused",
+        "reason": "unevaluable_value"
+      }
+    },
+    {
+      "id": "P4-R10",
+      "input": {
+        "predicate": {
+          "type": "or",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "headquarters_country": "US",
+          "employee_count": 100
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P4-R7",
+      "input": {
+        "predicate": {
+          "type": "or",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "headquarters_country": "GB",
+          "employee_count": "n/a"
+        }
+      },
+      "expect": {
+        "verdict": "pass"
+      }
+    },
+    {
+      "id": "P4-R11",
+      "input": {
+        "predicate": {
+          "type": "or",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "headquarters_country": "US",
+          "employee_count": "n/a"
+        }
+      },
+      "expect": {
+        "verdict": "refused",
+        "reason": "unevaluable_value"
+      }
+    },
+    {
+      "id": "P5-R1",
+      "input": {
+        "predicate": {
+          "type": "and",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "headquarters_country": "GB",
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "pass"
+      }
+    },
+    {
+      "id": "P5-R2",
+      "input": {
+        "predicate": {
+          "type": "and",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "headquarters_country": "US",
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P5-R3",
+      "input": {
+        "predicate": {
+          "type": "and",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "refused",
+        "reason": "unevaluable_value"
+      }
+    },
+    {
+      "id": "P5-R4",
+      "input": {
+        "predicate": {
+          "type": "and",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "headquarters_country": null,
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "refused",
+        "reason": "unevaluable_value"
+      }
+    },
+    {
+      "id": "P5-R6",
+      "input": {
+        "predicate": {
+          "type": "and",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "headquarters_country": "GB"
+        }
+      },
+      "expect": {
+        "verdict": "refused",
+        "reason": "unevaluable_value"
+      }
+    },
+    {
+      "id": "P5-R8",
+      "input": {
+        "predicate": {
+          "type": "and",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "employee_count": 100
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P5-R9",
+      "input": {
+        "predicate": {
+          "type": "and",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {}
+      },
+      "expect": {
+        "verdict": "refused",
+        "reason": "unevaluable_value"
+      }
+    },
+    {
+      "id": "P5-R10",
+      "input": {
+        "predicate": {
+          "type": "and",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "headquarters_country": "US",
+          "employee_count": 100
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P5-R7",
+      "input": {
+        "predicate": {
+          "type": "and",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "headquarters_country": "GB",
+          "employee_count": "n/a"
+        }
+      },
+      "expect": {
+        "verdict": "refused",
+        "reason": "unevaluable_value"
+      }
+    },
+    {
+      "id": "P5-R11",
+      "input": {
+        "predicate": {
+          "type": "and",
+          "children": [
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "headquarters_country",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "in",
+              "value": [
+                "GB"
+              ]
+            },
+            {
+              "type": "filter",
+              "dimension": {
+                "name": "employee_count",
+                "catalogVersion": "1.0.0"
+              },
+              "operator": "gte",
+              "value": 201
+            }
+          ]
+        },
+        "record": {
+          "headquarters_country": "US",
+          "employee_count": "n/a"
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P7-R1",
+      "input": {
+        "predicate": {
+          "type": "filter",
+          "dimension": {
+            "name": "headquarters_country",
+            "catalogVersion": "1.0.0"
+          },
+          "operator": "exists",
+          "value": false
+        },
+        "record": {
+          "headquarters_country": "GB",
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P7-R2",
+      "input": {
+        "predicate": {
+          "type": "filter",
+          "dimension": {
+            "name": "headquarters_country",
+            "catalogVersion": "1.0.0"
+          },
+          "operator": "exists",
+          "value": false
+        },
+        "record": {
+          "headquarters_country": "US",
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P7-R3",
+      "input": {
+        "predicate": {
+          "type": "filter",
+          "dimension": {
+            "name": "headquarters_country",
+            "catalogVersion": "1.0.0"
+          },
+          "operator": "exists",
+          "value": false
+        },
+        "record": {
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "pass"
+      }
+    },
+    {
+      "id": "P7-R4",
+      "input": {
+        "predicate": {
+          "type": "filter",
+          "dimension": {
+            "name": "headquarters_country",
+            "catalogVersion": "1.0.0"
+          },
+          "operator": "exists",
+          "value": false
+        },
+        "record": {
+          "headquarters_country": null,
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "pass"
+      }
+    },
+    {
+      "id": "P7-R6",
+      "input": {
+        "predicate": {
+          "type": "filter",
+          "dimension": {
+            "name": "headquarters_country",
+            "catalogVersion": "1.0.0"
+          },
+          "operator": "exists",
+          "value": false
+        },
+        "record": {
+          "headquarters_country": "GB"
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P7-R8",
+      "input": {
+        "predicate": {
+          "type": "filter",
+          "dimension": {
+            "name": "headquarters_country",
+            "catalogVersion": "1.0.0"
+          },
+          "operator": "exists",
+          "value": false
+        },
+        "record": {
+          "employee_count": 100
+        }
+      },
+      "expect": {
+        "verdict": "pass"
+      }
+    },
+    {
+      "id": "P7-R9",
+      "input": {
+        "predicate": {
+          "type": "filter",
+          "dimension": {
+            "name": "headquarters_country",
+            "catalogVersion": "1.0.0"
+          },
+          "operator": "exists",
+          "value": false
+        },
+        "record": {}
+      },
+      "expect": {
+        "verdict": "pass"
+      }
+    },
+    {
+      "id": "P7-R10",
+      "input": {
+        "predicate": {
+          "type": "filter",
+          "dimension": {
+            "name": "headquarters_country",
+            "catalogVersion": "1.0.0"
+          },
+          "operator": "exists",
+          "value": false
+        },
+        "record": {
+          "headquarters_country": "US",
+          "employee_count": 100
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P7-R7",
+      "input": {
+        "predicate": {
+          "type": "filter",
+          "dimension": {
+            "name": "headquarters_country",
+            "catalogVersion": "1.0.0"
+          },
+          "operator": "exists",
+          "value": false
+        },
+        "record": {
+          "headquarters_country": "GB",
+          "employee_count": "n/a"
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P7-R11",
+      "input": {
+        "predicate": {
+          "type": "filter",
+          "dimension": {
+            "name": "headquarters_country",
+            "catalogVersion": "1.0.0"
+          },
+          "operator": "exists",
+          "value": false
+        },
+        "record": {
+          "headquarters_country": "US",
+          "employee_count": "n/a"
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P7n-R1",
+      "input": {
+        "predicate": {
+          "type": "not",
+          "child": {
+            "type": "filter",
+            "dimension": {
+              "name": "headquarters_country",
+              "catalogVersion": "1.0.0"
+            },
+            "operator": "exists",
+            "value": true
+          }
+        },
+        "record": {
+          "headquarters_country": "GB",
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P7n-R2",
+      "input": {
+        "predicate": {
+          "type": "not",
+          "child": {
+            "type": "filter",
+            "dimension": {
+              "name": "headquarters_country",
+              "catalogVersion": "1.0.0"
+            },
+            "operator": "exists",
+            "value": true
+          }
+        },
+        "record": {
+          "headquarters_country": "US",
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P7n-R3",
+      "input": {
+        "predicate": {
+          "type": "not",
+          "child": {
+            "type": "filter",
+            "dimension": {
+              "name": "headquarters_country",
+              "catalogVersion": "1.0.0"
+            },
+            "operator": "exists",
+            "value": true
+          }
+        },
+        "record": {
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "pass"
+      }
+    },
+    {
+      "id": "P7n-R4",
+      "input": {
+        "predicate": {
+          "type": "not",
+          "child": {
+            "type": "filter",
+            "dimension": {
+              "name": "headquarters_country",
+              "catalogVersion": "1.0.0"
+            },
+            "operator": "exists",
+            "value": true
+          }
+        },
+        "record": {
+          "headquarters_country": null,
+          "employee_count": 500
+        }
+      },
+      "expect": {
+        "verdict": "pass"
+      }
+    },
+    {
+      "id": "P7n-R6",
+      "input": {
+        "predicate": {
+          "type": "not",
+          "child": {
+            "type": "filter",
+            "dimension": {
+              "name": "headquarters_country",
+              "catalogVersion": "1.0.0"
+            },
+            "operator": "exists",
+            "value": true
+          }
+        },
+        "record": {
+          "headquarters_country": "GB"
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P7n-R8",
+      "input": {
+        "predicate": {
+          "type": "not",
+          "child": {
+            "type": "filter",
+            "dimension": {
+              "name": "headquarters_country",
+              "catalogVersion": "1.0.0"
+            },
+            "operator": "exists",
+            "value": true
+          }
+        },
+        "record": {
+          "employee_count": 100
+        }
+      },
+      "expect": {
+        "verdict": "pass"
+      }
+    },
+    {
+      "id": "P7n-R9",
+      "input": {
+        "predicate": {
+          "type": "not",
+          "child": {
+            "type": "filter",
+            "dimension": {
+              "name": "headquarters_country",
+              "catalogVersion": "1.0.0"
+            },
+            "operator": "exists",
+            "value": true
+          }
+        },
+        "record": {}
+      },
+      "expect": {
+        "verdict": "pass"
+      }
+    },
+    {
+      "id": "P7n-R10",
+      "input": {
+        "predicate": {
+          "type": "not",
+          "child": {
+            "type": "filter",
+            "dimension": {
+              "name": "headquarters_country",
+              "catalogVersion": "1.0.0"
+            },
+            "operator": "exists",
+            "value": true
+          }
+        },
+        "record": {
+          "headquarters_country": "US",
+          "employee_count": 100
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P7n-R7",
+      "input": {
+        "predicate": {
+          "type": "not",
+          "child": {
+            "type": "filter",
+            "dimension": {
+              "name": "headquarters_country",
+              "catalogVersion": "1.0.0"
+            },
+            "operator": "exists",
+            "value": true
+          }
+        },
+        "record": {
+          "headquarters_country": "GB",
+          "employee_count": "n/a"
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    },
+    {
+      "id": "P7n-R11",
+      "input": {
+        "predicate": {
+          "type": "not",
+          "child": {
+            "type": "filter",
+            "dimension": {
+              "name": "headquarters_country",
+              "catalogVersion": "1.0.0"
+            },
+            "operator": "exists",
+            "value": true
+          }
+        },
+        "record": {
+          "headquarters_country": "US",
+          "employee_count": "n/a"
+        }
+      },
+      "expect": {
+        "verdict": "fail"
+      }
+    }
+  ]
+}

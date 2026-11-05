@@ -1,0 +1,187 @@
+{
+  "conformance": "core.email-account-key",
+  "version": "1.0.0",
+  "status": "ruled",
+  "basis": [
+    "SalesBlaster's email account key, as its Source context computes it for every admitted contact"
+  ],
+  "rule": "key(input): trim Unicode white space; lowercase by Unicode default case mapping (no locale); collapse a plus tag, replacing ^([^@+]+)\\+[^@]*@(.+)$ with $1@$2; then refuse unless the result matches ^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$. No Unicode normalization and no provider-specific folding. A runtime passes when, for every vector, it returns expect.key, or refuses where expect.refused is true.",
+  "vectors": [
+    {
+      "id": "EAK-01",
+      "input": "ada@example.com",
+      "expect": {
+        "key": "ada@example.com"
+      },
+      "why": "already canonical"
+    },
+    {
+      "id": "EAK-02",
+      "input": "Ada@Example.COM",
+      "expect": {
+        "key": "ada@example.com"
+      },
+      "why": "lowercased"
+    },
+    {
+      "id": "EAK-03",
+      "input": "  ada@example.com\t\n",
+      "expect": {
+        "key": "ada@example.com"
+      },
+      "why": "trimmed, including tabs and newlines"
+    },
+    {
+      "id": "EAK-04",
+      "input": "ada+acme@example.com",
+      "expect": {
+        "key": "ada@example.com"
+      },
+      "why": "a plus tag collapses to the base mailbox"
+    },
+    {
+      "id": "EAK-05",
+      "input": "Ada+Acme@Example.com",
+      "expect": {
+        "key": "ada@example.com"
+      },
+      "why": "lowercased, then the plus tag collapses"
+    },
+    {
+      "id": "EAK-06",
+      "input": "ada+@example.com",
+      "expect": {
+        "key": "ada@example.com"
+      },
+      "why": "an empty plus tag collapses"
+    },
+    {
+      "id": "EAK-07",
+      "input": "ada+a+b@example.com",
+      "expect": {
+        "key": "ada@example.com"
+      },
+      "why": "everything from the first plus to the at sign goes"
+    },
+    {
+      "id": "EAK-08",
+      "input": "+tag@example.com",
+      "expect": {
+        "key": "+tag@example.com"
+      },
+      "why": "a local part that starts with a plus has no base mailbox, so nothing collapses"
+    },
+    {
+      "id": "EAK-09",
+      "input": "a.d.a@example.com",
+      "expect": {
+        "key": "a.d.a@example.com"
+      },
+      "why": "dots in the local part are kept (no provider-specific folding)"
+    },
+    {
+      "id": "EAK-10",
+      "input": "ada@exa+mple.com",
+      "expect": {
+        "key": "ada@exa+mple.com"
+      },
+      "why": "a plus in the domain is not a tag"
+    },
+    {
+      "id": "EAK-11",
+      "input": "ada.lovelace@sub.example.com",
+      "expect": {
+        "key": "ada.lovelace@sub.example.com"
+      },
+      "why": "a multi-label domain is kept as given"
+    },
+    {
+      "id": "EAK-12",
+      "input": "ÄDA@Example.com",
+      "expect": {
+        "key": "äda@example.com"
+      },
+      "why": "Unicode default lowercasing, not ASCII-only"
+    },
+    {
+      "id": "EAK-13",
+      "input": "İnci@example.com",
+      "expect": {
+        "key": "i̇nci@example.com"
+      },
+      "why": "Unicode default lowercasing of U+0130 gives i plus U+0307, not a Turkish locale i"
+    },
+    {
+      "id": "EAK-14",
+      "input": "ada@example",
+      "expect": {
+        "refused": true
+      },
+      "why": "refused: the domain has no dot"
+    },
+    {
+      "id": "EAK-15",
+      "input": "ada example@example.com",
+      "expect": {
+        "refused": true
+      },
+      "why": "refused: whitespace inside the address"
+    },
+    {
+      "id": "EAK-16",
+      "input": "ada@@example.com",
+      "expect": {
+        "refused": true
+      },
+      "why": "refused: two at signs"
+    },
+    {
+      "id": "EAK-17",
+      "input": "",
+      "expect": {
+        "refused": true
+      },
+      "why": "refused: empty"
+    },
+    {
+      "id": "EAK-18",
+      "input": "   ",
+      "expect": {
+        "refused": true
+      },
+      "why": "refused: whitespace only"
+    },
+    {
+      "id": "EAK-19",
+      "input": "ada",
+      "expect": {
+        "refused": true
+      },
+      "why": "refused: no at sign"
+    },
+    {
+      "id": "EAK-20",
+      "input": "+@example.com",
+      "expect": {
+        "key": "+@example.com"
+      },
+      "why": "a lone plus is its own local part: kept"
+    },
+    {
+      "id": "EAK-21",
+      "input": "Äda@example.com",
+      "expect": {
+        "key": "äda@example.com"
+      },
+      "why": "no Unicode normalization: a decomposed letter stays decomposed (U+0061 U+0308), so it does not equal the composed form"
+    },
+    {
+      "id": "EAK-22",
+      "input": " ada@example.com ",
+      "expect": {
+        "key": "ada@example.com"
+      },
+      "why": "trimming removes Unicode white space, a no-break space included, not only ASCII"
+    }
+  ]
+}

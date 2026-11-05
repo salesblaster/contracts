@@ -1,0 +1,2751 @@
+{
+  "conformance": "enrich.calibration",
+  "version": "1.0.0",
+  "status": "ruled",
+  "basis": [
+    "a campaign's enrollment decision allows an automatic disposition only when the grader is calibrated against a ratified bar table for its own configuration and production runtime",
+    "bars are ratified per grader configuration from a signed audit, and a value with no ratified bar is never rendered"
+  ],
+  "rule": "checkCalibration(score, calibration) refuses in this order and holds otherwise: no_calibration when calibration is absent; not_ratified when it lacks ratifiedBy, ratifiedAt or auditRef (absent or empty); not_production when the calibration's graderConfiguration.runtime is development; configuration_mismatch when any of the eight key parts differs (enrichmentType id and version, the type's version an integer, rubric id and version, model, prompt name, version and contentHash, runtime); not_scored when outcome is not scored; no_accepted_engine_grade when no grade has evidencedBy engine and accepted true; unbarred_criterion when such a grade's criterionId has no bar; below_bar when such a grade's confidence is absent or below its threshold, compared as exact decimals across scales, a criterion barred twice being read at its stricter (higher) threshold. criterionIds lists, sorted, the criteria the last two are about, and is empty otherwise. Grades with evidencedBy operator, or accepted false, are not read. Vectors CO-1 to CO-6 each trip two conditions and expect the earlier; no_calibration with not_ratified, and no_accepted_engine_grade with unbarred_criterion, cannot occur together. The thresholds and confidences in these vectors are synthetic.",
+  "vectors": [
+    {
+      "id": "C-01",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": true,
+        "reason": "calibrated",
+        "criterionIds": []
+      },
+      "why": "every accepted engine grade clears its bar; the operator grade is not read"
+    },
+    {
+      "id": "C-02",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "unbarred_criterion",
+        "criterionIds": [
+          "fit",
+          "timing"
+        ]
+      },
+      "why": "an empty bar table, every grade accepted, fails"
+    },
+    {
+      "id": "C-03",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "warmth",
+              "evidencedBy": "operator",
+              "accepted": true
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "operator",
+              "accepted": true
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "no_accepted_engine_grade",
+        "criterionIds": []
+      },
+      "why": "a rubric whose criteria are all operator-evidenced fails: never vacuously true"
+    },
+    {
+      "id": "C-04",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            }
+          ]
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "no_calibration",
+        "criterionIds": []
+      },
+      "why": "no bar table at all"
+    },
+    {
+      "id": "C-05",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "d4e5f6"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "configuration_mismatch",
+        "criterionIds": []
+      },
+      "why": "a prompt whose content changed: bars do not transfer"
+    },
+    {
+      "id": "C-06",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.1.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "configuration_mismatch",
+        "criterionIds": []
+      },
+      "why": "another rubric version"
+    },
+    {
+      "id": "C-07",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.5500"
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "below_bar",
+        "criterionIds": [
+          "timing"
+        ]
+      },
+      "why": "one grade below its bar"
+    },
+    {
+      "id": "C-08",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7000"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.6000"
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": true,
+        "reason": "calibrated",
+        "criterionIds": []
+      },
+      "why": "a confidence equal to its bar clears it (at least)"
+    },
+    {
+      "id": "C-09",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.6999"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.6000"
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "below_bar",
+        "criterionIds": [
+          "fit"
+        ]
+      },
+      "why": "decimals compare exactly, across scales: 0.6999 is below 0.70"
+    },
+    {
+      "id": "C-10",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7000"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.6000"
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": true,
+        "reason": "calibrated",
+        "criterionIds": []
+      },
+      "why": "0.7000 equals 0.70 and 0.6000 equals 0.60: a scale-4 confidence against a scale-2 threshold"
+    },
+    {
+      "id": "C-11",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": false,
+              "confidence": "0.1000"
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": true,
+        "reason": "calibrated",
+        "criterionIds": []
+      },
+      "why": "an engine grade code did not accept is not read"
+    },
+    {
+      "id": "C-12",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "reach",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9900"
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "unbarred_criterion",
+        "criterionIds": [
+          "reach"
+        ]
+      },
+      "why": "an accepted engine grade with no bar fails, whatever the others do"
+    },
+    {
+      "id": "C-13",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "below_bar",
+        "criterionIds": [
+          "fit"
+        ]
+      },
+      "why": "an accepted engine grade with no confidence (a hand-built input that breaks the rule that every engine grade carries a confidence) cannot clear a bar: the predicate stays total"
+    },
+    {
+      "id": "C-14",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": false,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": false,
+              "confidence": "0.7500"
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "no_accepted_engine_grade",
+        "criterionIds": []
+      },
+      "why": "engine grades, none accepted: fails"
+    },
+    {
+      "id": "C-15",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 2
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "configuration_mismatch",
+        "criterionIds": []
+      },
+      "why": "another version of the enrichment type: the type's version is part of the key"
+    },
+    {
+      "id": "C-16",
+      "input": {
+        "score": {
+          "outcome": "disqualified",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "not_scored",
+        "criterionIds": []
+      },
+      "why": "a disqualified score is never calibrated itself; campaigns checks each inferred input of its disqualifier instead"
+    },
+    {
+      "id": "C-17",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "not_ratified",
+        "criterionIds": []
+      },
+      "why": "a calibration without its audit reference is not ratified"
+    },
+    {
+      "id": "C-18",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.8000"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.90"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            },
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "below_bar",
+        "criterionIds": [
+          "fit"
+        ]
+      },
+      "why": "a criterion barred twice (a producer error: each criterion is barred at most once), the grade between the two thresholds: the stricter bar is read, so the error can only refuse"
+    },
+    {
+      "id": "C-19",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": ""
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "not_ratified",
+        "criterionIds": []
+      },
+      "why": "an auditRef of \"\": a ratification field lacks when it is absent or empty"
+    },
+    {
+      "id": "C-20",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "development"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "development"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "not_production",
+        "criterionIds": []
+      },
+      "why": "a ratified development calibration checked against a score of its own development configuration, every accepted engine grade clearing its bar: development bars authorize no automatic disposition"
+    },
+    {
+      "id": "C-21",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "development"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "configuration_mismatch",
+        "criterionIds": []
+      },
+      "why": "a ratified production calibration whose seven other key parts equal a development score's, every accepted engine grade clearing its bar: production bars never calibrate a development score"
+    },
+    {
+      "id": "C-22",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score_other",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "configuration_mismatch",
+        "criterionIds": []
+      },
+      "why": "the score's enrichment type id differs, every other part equal: bars do not transfer"
+    },
+    {
+      "id": "C-23",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-other",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "configuration_mismatch",
+        "criterionIds": []
+      },
+      "why": "the score's rubric id differs, every other part equal"
+    },
+    {
+      "id": "C-24",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-other",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "configuration_mismatch",
+        "criterionIds": []
+      },
+      "why": "the score's prompt name differs, every other part equal"
+    },
+    {
+      "id": "C-25",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.1.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "configuration_mismatch",
+        "criterionIds": []
+      },
+      "why": "the score's prompt version differs, every other part equal"
+    },
+    {
+      "id": "C-26",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "not_ratified",
+        "criterionIds": []
+      },
+      "why": "a calibration with no ratifiedBy is not ratified"
+    },
+    {
+      "id": "C-27",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "not_ratified",
+        "criterionIds": []
+      },
+      "why": "a calibration with no ratifiedAt is not ratified"
+    },
+    {
+      "id": "C-18b",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.8000"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            },
+            {
+              "criterionId": "fit",
+              "threshold": "0.90"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "below_bar",
+        "criterionIds": [
+          "fit"
+        ]
+      },
+      "why": "C-18 with the two bars listed the other way round: the stricter bar is read wherever it is listed, so neither first-listed nor last-listed wins"
+    },
+    {
+      "id": "CO-1",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-other",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": ""
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "not_ratified",
+        "criterionIds": []
+      },
+      "why": "not ratified and a configuration mismatch at once: not_ratified is checked first"
+    },
+    {
+      "id": "CO-2",
+      "input": {
+        "score": {
+          "outcome": "disqualified",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-other",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "configuration_mismatch",
+        "criterionIds": []
+      },
+      "why": "a configuration mismatch and a disqualified outcome at once: configuration_mismatch is checked first"
+    },
+    {
+      "id": "CO-3",
+      "input": {
+        "score": {
+          "outcome": "disqualified",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "not_scored",
+        "criterionIds": []
+      },
+      "why": "a disqualified outcome with no accepted engine grade: not_scored is checked first"
+    },
+    {
+      "id": "CO-4",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.1000"
+            },
+            {
+              "criterionId": "reach",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9900"
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "unbarred_criterion",
+        "criterionIds": [
+          "reach"
+        ]
+      },
+      "why": "one criterion unbarred and another below its bar: unbarred_criterion is checked first, and names only the unbarred one"
+    },
+    {
+      "id": "CO-5",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "development"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "development"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": ""
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "not_ratified",
+        "criterionIds": []
+      },
+      "why": "not ratified and a development calibration at once: not_ratified is checked first"
+    },
+    {
+      "id": "CO-6",
+      "input": {
+        "score": {
+          "outcome": "scored",
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "production"
+          },
+          "grades": [
+            {
+              "criterionId": "fit",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.9100"
+            },
+            {
+              "criterionId": "timing",
+              "evidencedBy": "engine",
+              "accepted": true,
+              "confidence": "0.7500"
+            },
+            {
+              "criterionId": "budget",
+              "evidencedBy": "operator",
+              "accepted": true
+            }
+          ]
+        },
+        "calibration": {
+          "schemaVersion": 1,
+          "graderConfiguration": {
+            "enrichmentType": {
+              "id": "icp_score",
+              "version": 1
+            },
+            "rubric": {
+              "id": "rubric-fixture",
+              "version": "1.0.0"
+            },
+            "model": "model-fixture",
+            "prompt": {
+              "name": "grader-fixture",
+              "version": "1.0.0",
+              "contentHash": "a1b2c3"
+            },
+            "runtime": "development"
+          },
+          "revision": 1,
+          "bars": [
+            {
+              "criterionId": "fit",
+              "threshold": "0.70"
+            },
+            {
+              "criterionId": "timing",
+              "threshold": "0.60"
+            }
+          ],
+          "ratifiedBy": "operator-0001",
+          "ratifiedAt": "2026-11-04T09:00:00.000Z",
+          "auditRef": "audit-0001"
+        }
+      },
+      "expect": {
+        "holds": false,
+        "reason": "not_production",
+        "criterionIds": []
+      },
+      "why": "a development calibration against a production score, so a configuration mismatch too: not_production is checked first"
+    }
+  ]
+}

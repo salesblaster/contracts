@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:core:record-pointer:v1",
+  "type": "string",
+  "pattern": "^record:[a-z][a-z0-9_]{0,62}\\/k(0|[1-9][0-9]*)_[0-9a-f]{32}(#[a-z][a-z0-9_]{0,62}\\/k(0|[1-9][0-9]*)_[0-9a-f]{32})?$"
+}
