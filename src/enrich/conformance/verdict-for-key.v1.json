@@ -1,0 +1,158 @@
+{
+  "conformance": "enrich.verdict-for-key",
+  "version": "1.0.0",
+  "status": "ruled",
+  "basis": [
+    "The verdict for one email-account-key, derived from the observed verdicts of the addresses that share it. The per-address verdicts stay the observed facts; the key verdict is derived, never a vendor answer."
+  ],
+  "rule": "Group the variants by core.email-account-key (expect.key names the group); verdictForKey(variants' statuses) must equal expect.status. All agree: the common verdict. Any two disagree, none, or one outside the five statuses: unknown.",
+  "vectors": [
+    {
+      "id": "VFK-01",
+      "input": {
+        "variants": [
+          {
+            "email": "ada+n@x.test",
+            "status": "valid"
+          },
+          {
+            "email": "ada@x.test",
+            "status": "invalid"
+          }
+        ]
+      },
+      "expect": {
+        "key": "ada@x.test",
+        "status": "unknown"
+      },
+      "why": "plus-tag variants disagree: the key fails closed"
+    },
+    {
+      "id": "VFK-02",
+      "input": {
+        "variants": [
+          {
+            "email": "Ada@x.test",
+            "status": "catch_all"
+          },
+          {
+            "email": "ada+n@x.test",
+            "status": "catch_all"
+          }
+        ]
+      },
+      "expect": {
+        "key": "ada@x.test",
+        "status": "catch_all"
+      },
+      "why": "variants agree: the key takes the common verdict"
+    },
+    {
+      "id": "VFK-03",
+      "input": {
+        "variants": [
+          {
+            "email": "ada@x.test",
+            "status": "invalid"
+          },
+          {
+            "email": "ada+n@x.test",
+            "status": "valid"
+          }
+        ]
+      },
+      "expect": {
+        "key": "ada@x.test",
+        "status": "unknown"
+      },
+      "why": "order does not matter"
+    },
+    {
+      "id": "VFK-04",
+      "input": {
+        "variants": [
+          {
+            "email": "ada@x.test",
+            "status": "risky"
+          }
+        ]
+      },
+      "expect": {
+        "key": "ada@x.test",
+        "status": "risky"
+      },
+      "why": "one variant: its verdict"
+    },
+    {
+      "id": "VFK-05",
+      "input": {
+        "variants": [
+          {
+            "email": "ada+a@x.test",
+            "status": "valid"
+          },
+          {
+            "email": "ada+b@x.test",
+            "status": "valid"
+          },
+          {
+            "email": "ada@x.test",
+            "status": "unknown"
+          }
+        ]
+      },
+      "expect": {
+        "key": "ada@x.test",
+        "status": "unknown"
+      },
+      "why": "one fail-closed unknown makes the key unknown"
+    },
+    {
+      "id": "VFK-06",
+      "input": {
+        "variants": []
+      },
+      "expect": {
+        "key": "ada@x.test",
+        "status": "unknown"
+      },
+      "why": "no variant: unknown"
+    },
+    {
+      "id": "VFK-07",
+      "input": {
+        "variants": [
+          {
+            "email": "ada@x.test",
+            "status": "bogus"
+          }
+        ]
+      },
+      "expect": {
+        "key": "ada@x.test",
+        "status": "unknown"
+      },
+      "why": "the first variant is outside the five statuses: unknown, never trusted"
+    },
+    {
+      "id": "VFK-08",
+      "input": {
+        "variants": [
+          {
+            "email": "ada@x.test",
+            "status": "valid"
+          },
+          {
+            "email": "ada+n@x.test",
+            "status": "bogus"
+          }
+        ]
+      },
+      "expect": {
+        "key": "ada@x.test",
+        "status": "unknown"
+      },
+      "why": "a later variant is outside the five statuses: unknown"
+    }
+  ]
+}

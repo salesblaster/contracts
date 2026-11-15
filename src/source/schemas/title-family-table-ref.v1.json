@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:source:title-family-table-ref:v1",
+  "type": "object",
+  "properties": {
+    "tableId": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    }
+  },
+  "required": ["tableId", "version"],
+  "additionalProperties": false
+}

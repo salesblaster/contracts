@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:source:reject-reason:v1",
+  "type": "string",
+  "enum": [
+    "no_field_survived_allow_list",
+    "no_identifying_field",
+    "invalid_email",
+    "duplicate_in_batch"
+  ]
+}

@@ -1,0 +1,1958 @@
+{
+  "conformance": "source.title-family-table",
+  "version": "1.0.0",
+  "status": "ruled",
+  "basis": [
+    "a title_family table is refused at load unless its abbreviations name each token once and its families list is exactly what it can produce"
+  ],
+  "rule": "load(table) refuses in this order and accepts otherwise: abbreviation_not_a_token when a pair's token or replacement does not match ^[a-z0-9]+$ (a space, an uppercase letter, punctuation, or empty); duplicate_abbreviation_token when two abbreviations pairs have the same token; families_missing when a family the table can produce (every functions family_prefix joined by _ to every levels suffix, and other) is not in families; families_extra when families lists a value the table cannot produce. expect is accepted, or refused with the reason.",
+  "vectors": [
+    {
+      "id": "TT-01",
+      "input": {
+        "table": {
+          "table_id": "events-marketing",
+          "version": "1.0.0",
+          "families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "mktg_mgr",
+            "other"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            }
+          ],
+          "exclusions": [
+            "chief of staff",
+            "intern",
+            "internship",
+            "assistant",
+            "apprentice",
+            "trainee",
+            "student",
+            "graduate",
+            "volunteer",
+            "freelance",
+            "freelancer",
+            "consultant"
+          ],
+          "functions": [
+            {
+              "family_prefix": "events",
+              "tokens": [
+                "event",
+                "events",
+                "experiential",
+                "conference",
+                "conferences",
+                "meetings",
+                "incentive",
+                "incentives"
+              ]
+            },
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "marketing",
+                "brand",
+                "communications",
+                "demand generation",
+                "cmo"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "exec",
+              "tokens": [
+                "chief",
+                "cmo",
+                "vp",
+                "vice president",
+                "head",
+                "director",
+                "executive director",
+                "managing director",
+                "chief executive",
+                "executive vice president"
+              ]
+            },
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "manager",
+                "lead",
+                "leader",
+                "coordinator",
+                "planner",
+                "producer",
+                "specialist",
+                "officer",
+                "executive",
+                "programmer",
+                "program manager"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "accepted": true
+      },
+      "why": "events-marketing 1.0.0 as published"
+    },
+    {
+      "id": "TT-02",
+      "input": {
+        "table": {
+          "table_id": "events-marketing",
+          "version": "1.0.0",
+          "families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "mktg_mgr",
+            "other"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            },
+            {
+              "token": "mgr",
+              "replacement": "management"
+            }
+          ],
+          "exclusions": [
+            "chief of staff",
+            "intern",
+            "internship",
+            "assistant",
+            "apprentice",
+            "trainee",
+            "student",
+            "graduate",
+            "volunteer",
+            "freelance",
+            "freelancer",
+            "consultant"
+          ],
+          "functions": [
+            {
+              "family_prefix": "events",
+              "tokens": [
+                "event",
+                "events",
+                "experiential",
+                "conference",
+                "conferences",
+                "meetings",
+                "incentive",
+                "incentives"
+              ]
+            },
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "marketing",
+                "brand",
+                "communications",
+                "demand generation",
+                "cmo"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "exec",
+              "tokens": [
+                "chief",
+                "cmo",
+                "vp",
+                "vice president",
+                "head",
+                "director",
+                "executive director",
+                "managing director",
+                "chief executive",
+                "executive vice president"
+              ]
+            },
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "manager",
+                "lead",
+                "leader",
+                "coordinator",
+                "planner",
+                "producer",
+                "specialist",
+                "officer",
+                "executive",
+                "programmer",
+                "program manager"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "refused": "duplicate_abbreviation_token"
+      },
+      "why": "a token listed twice, even with another replacement: no order decides between them"
+    },
+    {
+      "id": "TT-03",
+      "input": {
+        "table": {
+          "table_id": "events-marketing",
+          "version": "1.0.0",
+          "families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "mktg_mgr",
+            "other"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            }
+          ],
+          "exclusions": [
+            "chief of staff",
+            "intern",
+            "internship",
+            "assistant",
+            "apprentice",
+            "trainee",
+            "student",
+            "graduate",
+            "volunteer",
+            "freelance",
+            "freelancer",
+            "consultant"
+          ],
+          "functions": [
+            {
+              "family_prefix": "events",
+              "tokens": [
+                "event",
+                "events",
+                "experiential",
+                "conference",
+                "conferences",
+                "meetings",
+                "incentive",
+                "incentives"
+              ]
+            },
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "marketing",
+                "brand",
+                "communications",
+                "demand generation",
+                "cmo"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "exec",
+              "tokens": [
+                "chief",
+                "cmo",
+                "vp",
+                "vice president",
+                "head",
+                "director",
+                "executive director",
+                "managing director",
+                "chief executive",
+                "executive vice president"
+              ]
+            },
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "manager",
+                "lead",
+                "leader",
+                "coordinator",
+                "planner",
+                "producer",
+                "specialist",
+                "officer",
+                "executive",
+                "programmer",
+                "program manager"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "refused": "duplicate_abbreviation_token"
+      },
+      "why": "a token listed twice with the same replacement is refused too"
+    },
+    {
+      "id": "TT-04",
+      "input": {
+        "table": {
+          "table_id": "events-marketing",
+          "version": "1.0.0",
+          "families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "other"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            }
+          ],
+          "exclusions": [
+            "chief of staff",
+            "intern",
+            "internship",
+            "assistant",
+            "apprentice",
+            "trainee",
+            "student",
+            "graduate",
+            "volunteer",
+            "freelance",
+            "freelancer",
+            "consultant"
+          ],
+          "functions": [
+            {
+              "family_prefix": "events",
+              "tokens": [
+                "event",
+                "events",
+                "experiential",
+                "conference",
+                "conferences",
+                "meetings",
+                "incentive",
+                "incentives"
+              ]
+            },
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "marketing",
+                "brand",
+                "communications",
+                "demand generation",
+                "cmo"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "exec",
+              "tokens": [
+                "chief",
+                "cmo",
+                "vp",
+                "vice president",
+                "head",
+                "director",
+                "executive director",
+                "managing director",
+                "chief executive",
+                "executive vice president"
+              ]
+            },
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "manager",
+                "lead",
+                "leader",
+                "coordinator",
+                "planner",
+                "producer",
+                "specialist",
+                "officer",
+                "executive",
+                "programmer",
+                "program manager"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "refused": "families_missing"
+      },
+      "why": "the table can produce mktg_mgr but does not list it"
+    },
+    {
+      "id": "TT-05",
+      "input": {
+        "table": {
+          "table_id": "events-marketing",
+          "version": "1.0.0",
+          "families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "mktg_mgr"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            }
+          ],
+          "exclusions": [
+            "chief of staff",
+            "intern",
+            "internship",
+            "assistant",
+            "apprentice",
+            "trainee",
+            "student",
+            "graduate",
+            "volunteer",
+            "freelance",
+            "freelancer",
+            "consultant"
+          ],
+          "functions": [
+            {
+              "family_prefix": "events",
+              "tokens": [
+                "event",
+                "events",
+                "experiential",
+                "conference",
+                "conferences",
+                "meetings",
+                "incentive",
+                "incentives"
+              ]
+            },
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "marketing",
+                "brand",
+                "communications",
+                "demand generation",
+                "cmo"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "exec",
+              "tokens": [
+                "chief",
+                "cmo",
+                "vp",
+                "vice president",
+                "head",
+                "director",
+                "executive director",
+                "managing director",
+                "chief executive",
+                "executive vice president"
+              ]
+            },
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "manager",
+                "lead",
+                "leader",
+                "coordinator",
+                "planner",
+                "producer",
+                "specialist",
+                "officer",
+                "executive",
+                "programmer",
+                "program manager"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "refused": "families_missing"
+      },
+      "why": "other is always producible, so it must be listed"
+    },
+    {
+      "id": "TT-06",
+      "input": {
+        "table": {
+          "table_id": "events-marketing",
+          "version": "1.0.0",
+          "families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "mktg_mgr",
+            "other",
+            "sales_exec"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            }
+          ],
+          "exclusions": [
+            "chief of staff",
+            "intern",
+            "internship",
+            "assistant",
+            "apprentice",
+            "trainee",
+            "student",
+            "graduate",
+            "volunteer",
+            "freelance",
+            "freelancer",
+            "consultant"
+          ],
+          "functions": [
+            {
+              "family_prefix": "events",
+              "tokens": [
+                "event",
+                "events",
+                "experiential",
+                "conference",
+                "conferences",
+                "meetings",
+                "incentive",
+                "incentives"
+              ]
+            },
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "marketing",
+                "brand",
+                "communications",
+                "demand generation",
+                "cmo"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "exec",
+              "tokens": [
+                "chief",
+                "cmo",
+                "vp",
+                "vice president",
+                "head",
+                "director",
+                "executive director",
+                "managing director",
+                "chief executive",
+                "executive vice president"
+              ]
+            },
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "manager",
+                "lead",
+                "leader",
+                "coordinator",
+                "planner",
+                "producer",
+                "specialist",
+                "officer",
+                "executive",
+                "programmer",
+                "program manager"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "refused": "families_extra"
+      },
+      "why": "a listed family the table cannot produce"
+    },
+    {
+      "id": "TT-07",
+      "input": {
+        "table": {
+          "table_id": "events-marketing",
+          "version": "1.0.0",
+          "families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "mktg_mgr",
+            "other",
+            "sales_exec"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            }
+          ],
+          "exclusions": [
+            "chief of staff",
+            "intern",
+            "internship",
+            "assistant",
+            "apprentice",
+            "trainee",
+            "student",
+            "graduate",
+            "volunteer",
+            "freelance",
+            "freelancer",
+            "consultant"
+          ],
+          "functions": [
+            {
+              "family_prefix": "events",
+              "tokens": [
+                "event",
+                "events",
+                "experiential",
+                "conference",
+                "conferences",
+                "meetings",
+                "incentive",
+                "incentives"
+              ]
+            },
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "marketing",
+                "brand",
+                "communications",
+                "demand generation",
+                "cmo"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "exec",
+              "tokens": [
+                "chief",
+                "cmo",
+                "vp",
+                "vice president",
+                "head",
+                "director",
+                "executive director",
+                "managing director",
+                "chief executive",
+                "executive vice president"
+              ]
+            },
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "manager",
+                "lead",
+                "leader",
+                "coordinator",
+                "planner",
+                "producer",
+                "specialist",
+                "officer",
+                "executive",
+                "programmer",
+                "program manager"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "refused": "duplicate_abbreviation_token"
+      },
+      "why": "a duplicate token and an extra family at once: the duplicate is checked first"
+    },
+    {
+      "id": "TT-08",
+      "input": {
+        "table": {
+          "table_id": "events-marketing",
+          "version": "1.0.0",
+          "families": [
+            "events_exec",
+            "mktg_exec",
+            "mktg_mgr",
+            "other",
+            "sales_exec"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            }
+          ],
+          "exclusions": [
+            "chief of staff",
+            "intern",
+            "internship",
+            "assistant",
+            "apprentice",
+            "trainee",
+            "student",
+            "graduate",
+            "volunteer",
+            "freelance",
+            "freelancer",
+            "consultant"
+          ],
+          "functions": [
+            {
+              "family_prefix": "events",
+              "tokens": [
+                "event",
+                "events",
+                "experiential",
+                "conference",
+                "conferences",
+                "meetings",
+                "incentive",
+                "incentives"
+              ]
+            },
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "marketing",
+                "brand",
+                "communications",
+                "demand generation",
+                "cmo"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "exec",
+              "tokens": [
+                "chief",
+                "cmo",
+                "vp",
+                "vice president",
+                "head",
+                "director",
+                "executive director",
+                "managing director",
+                "chief executive",
+                "executive vice president"
+              ]
+            },
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "manager",
+                "lead",
+                "leader",
+                "coordinator",
+                "planner",
+                "producer",
+                "specialist",
+                "officer",
+                "executive",
+                "programmer",
+                "program manager"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "refused": "families_missing"
+      },
+      "why": "a missing and an extra family at once: missing is checked first"
+    },
+    {
+      "id": "TT-09",
+      "input": {
+        "table": {
+          "table_id": "events-marketing",
+          "version": "1.0.0",
+          "families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "mktg_mgr",
+            "other"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            },
+            {
+              "token": "vp",
+              "replacement": "vice president"
+            }
+          ],
+          "exclusions": [
+            "chief of staff",
+            "intern",
+            "internship",
+            "assistant",
+            "apprentice",
+            "trainee",
+            "student",
+            "graduate",
+            "volunteer",
+            "freelance",
+            "freelancer",
+            "consultant"
+          ],
+          "functions": [
+            {
+              "family_prefix": "events",
+              "tokens": [
+                "event",
+                "events",
+                "experiential",
+                "conference",
+                "conferences",
+                "meetings",
+                "incentive",
+                "incentives"
+              ]
+            },
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "marketing",
+                "brand",
+                "communications",
+                "demand generation",
+                "cmo"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "exec",
+              "tokens": [
+                "chief",
+                "cmo",
+                "vp",
+                "vice president",
+                "head",
+                "director",
+                "executive director",
+                "managing director",
+                "chief executive",
+                "executive vice president"
+              ]
+            },
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "manager",
+                "lead",
+                "leader",
+                "coordinator",
+                "planner",
+                "producer",
+                "specialist",
+                "officer",
+                "executive",
+                "programmer",
+                "program manager"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "refused": "abbreviation_not_a_token"
+      },
+      "why": "a replacement with a space would load and never match, since a title's tokens are split before they are replaced"
+    },
+    {
+      "id": "TT-10",
+      "input": {
+        "table": {
+          "table_id": "events-marketing",
+          "version": "1.0.0",
+          "families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "mktg_mgr",
+            "other"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            },
+            {
+              "token": "Mgmt",
+              "replacement": "management"
+            }
+          ],
+          "exclusions": [
+            "chief of staff",
+            "intern",
+            "internship",
+            "assistant",
+            "apprentice",
+            "trainee",
+            "student",
+            "graduate",
+            "volunteer",
+            "freelance",
+            "freelancer",
+            "consultant"
+          ],
+          "functions": [
+            {
+              "family_prefix": "events",
+              "tokens": [
+                "event",
+                "events",
+                "experiential",
+                "conference",
+                "conferences",
+                "meetings",
+                "incentive",
+                "incentives"
+              ]
+            },
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "marketing",
+                "brand",
+                "communications",
+                "demand generation",
+                "cmo"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "exec",
+              "tokens": [
+                "chief",
+                "cmo",
+                "vp",
+                "vice president",
+                "head",
+                "director",
+                "executive director",
+                "managing director",
+                "chief executive",
+                "executive vice president"
+              ]
+            },
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "manager",
+                "lead",
+                "leader",
+                "coordinator",
+                "planner",
+                "producer",
+                "specialist",
+                "officer",
+                "executive",
+                "programmer",
+                "program manager"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "refused": "abbreviation_not_a_token"
+      },
+      "why": "an uppercase token can never equal a normalized title token"
+    },
+    {
+      "id": "TT-11",
+      "input": {
+        "table": {
+          "table_id": "events-marketing",
+          "version": "1.0.0",
+          "families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "mktg_mgr",
+            "other"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            },
+            {
+              "token": "coord",
+              "replacement": "co-ordinator"
+            }
+          ],
+          "exclusions": [
+            "chief of staff",
+            "intern",
+            "internship",
+            "assistant",
+            "apprentice",
+            "trainee",
+            "student",
+            "graduate",
+            "volunteer",
+            "freelance",
+            "freelancer",
+            "consultant"
+          ],
+          "functions": [
+            {
+              "family_prefix": "events",
+              "tokens": [
+                "event",
+                "events",
+                "experiential",
+                "conference",
+                "conferences",
+                "meetings",
+                "incentive",
+                "incentives"
+              ]
+            },
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "marketing",
+                "brand",
+                "communications",
+                "demand generation",
+                "cmo"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "exec",
+              "tokens": [
+                "chief",
+                "cmo",
+                "vp",
+                "vice president",
+                "head",
+                "director",
+                "executive director",
+                "managing director",
+                "chief executive",
+                "executive vice president"
+              ]
+            },
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "manager",
+                "lead",
+                "leader",
+                "coordinator",
+                "planner",
+                "producer",
+                "specialist",
+                "officer",
+                "executive",
+                "programmer",
+                "program manager"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "refused": "abbreviation_not_a_token"
+      },
+      "why": "punctuation in a replacement"
+    },
+    {
+      "id": "TT-12",
+      "input": {
+        "table": {
+          "table_id": "events-marketing",
+          "version": "1.0.0",
+          "families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "mktg_mgr",
+            "other"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            },
+            {
+              "token": "",
+              "replacement": "director"
+            }
+          ],
+          "exclusions": [
+            "chief of staff",
+            "intern",
+            "internship",
+            "assistant",
+            "apprentice",
+            "trainee",
+            "student",
+            "graduate",
+            "volunteer",
+            "freelance",
+            "freelancer",
+            "consultant"
+          ],
+          "functions": [
+            {
+              "family_prefix": "events",
+              "tokens": [
+                "event",
+                "events",
+                "experiential",
+                "conference",
+                "conferences",
+                "meetings",
+                "incentive",
+                "incentives"
+              ]
+            },
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "marketing",
+                "brand",
+                "communications",
+                "demand generation",
+                "cmo"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "exec",
+              "tokens": [
+                "chief",
+                "cmo",
+                "vp",
+                "vice president",
+                "head",
+                "director",
+                "executive director",
+                "managing director",
+                "chief executive",
+                "executive vice president"
+              ]
+            },
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "manager",
+                "lead",
+                "leader",
+                "coordinator",
+                "planner",
+                "producer",
+                "specialist",
+                "officer",
+                "executive",
+                "programmer",
+                "program manager"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "refused": "abbreviation_not_a_token"
+      },
+      "why": "an empty token"
+    },
+    {
+      "id": "TT-13",
+      "input": {
+        "table": {
+          "table_id": "events-marketing",
+          "version": "1.0.0",
+          "families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "mktg_mgr",
+            "other"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            },
+            {
+              "token": "Dir",
+              "replacement": "director"
+            },
+            {
+              "token": "Dir",
+              "replacement": "director"
+            }
+          ],
+          "exclusions": [
+            "chief of staff",
+            "intern",
+            "internship",
+            "assistant",
+            "apprentice",
+            "trainee",
+            "student",
+            "graduate",
+            "volunteer",
+            "freelance",
+            "freelancer",
+            "consultant"
+          ],
+          "functions": [
+            {
+              "family_prefix": "events",
+              "tokens": [
+                "event",
+                "events",
+                "experiential",
+                "conference",
+                "conferences",
+                "meetings",
+                "incentive",
+                "incentives"
+              ]
+            },
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "marketing",
+                "brand",
+                "communications",
+                "demand generation",
+                "cmo"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "exec",
+              "tokens": [
+                "chief",
+                "cmo",
+                "vp",
+                "vice president",
+                "head",
+                "director",
+                "executive director",
+                "managing director",
+                "chief executive",
+                "executive vice president"
+              ]
+            },
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "manager",
+                "lead",
+                "leader",
+                "coordinator",
+                "planner",
+                "producer",
+                "specialist",
+                "officer",
+                "executive",
+                "programmer",
+                "program manager"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "refused": "abbreviation_not_a_token"
+      },
+      "why": "a malformed token that is also duplicated reports the first reason: a pair is invalid on its own before pairs are compared"
+    }
+  ]
+}

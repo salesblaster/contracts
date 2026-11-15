@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:source:admitted-prospect-batch:v1",
+  "type": "object",
+  "properties": {
+    "shape": {
+      "type": "string",
+      "const": "source.admitted-prospect-batch"
+    },
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "tenantId": {
+      "type": "string"
+    },
+    "admissionId": {
+      "type": "string"
+    },
+    "segmentId": {
+      "type": "string"
+    },
+    "admittedAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+    },
+    "declaration": {
+      "type": "object",
+      "properties": {
+        "fieldSet": {
+          "type": "string",
+          "enum": ["declared", "undeclared"]
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "titleFamilyTable": {
+          "type": "object",
+          "properties": {
+            "tableId": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": ["tableId", "version"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["fieldSet"],
+      "additionalProperties": false
+    },
+    "prospects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "globalContactId": {
+            "type": "string"
+          },
+          "emailAccountKey": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "companyName": {
+            "type": "string"
+          },
+          "companyDomain": {
+            "type": "string"
+          },
+          "linkedinUrl": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "titleFamily": {
+            "type": "string"
+          },
+          "globalCompanyId": {
+            "type": "string"
+          },
+          "provenance": {
+            "type": "object",
+            "properties": {
+              "acquisitionSource": {
+                "type": "string"
+              },
+              "acquisitionRef": {
+                "type": "string"
+              }
+            },
+            "required": ["acquisitionSource"],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "globalContactId",
+          "emailAccountKey",
+          "email",
+          "provenance"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "in": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "admitted": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "rejected": {
+          "type": "object",
+          "properties": {
+            "no_field_survived_allow_list": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "no_identifying_field": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "invalid_email": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "duplicate_in_batch": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "no_field_survived_allow_list",
+            "no_identifying_field",
+            "invalid_email",
+            "duplicate_in_batch"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": ["in", "admitted", "rejected"],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "shape",
+    "schemaVersion",
+    "tenantId",
+    "admissionId",
+    "admittedAt",
+    "declaration",
+    "prospects",
+    "counts"
+  ],
+  "additionalProperties": false
+}

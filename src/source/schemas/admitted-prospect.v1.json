@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:source:admitted-prospect:v1",
+  "type": "object",
+  "properties": {
+    "globalContactId": {
+      "type": "string"
+    },
+    "emailAccountKey": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "companyName": {
+      "type": "string"
+    },
+    "companyDomain": {
+      "type": "string"
+    },
+    "linkedinUrl": {
+      "type": "string"
+    },
+    "fullName": {
+      "type": "string"
+    },
+    "titleFamily": {
+      "type": "string"
+    },
+    "globalCompanyId": {
+      "type": "string"
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "acquisitionSource": {
+          "type": "string"
+        },
+        "acquisitionRef": {
+          "type": "string"
+        }
+      },
+      "required": ["acquisitionSource"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["globalContactId", "emailAccountKey", "email", "provenance"],
+  "additionalProperties": false
+}

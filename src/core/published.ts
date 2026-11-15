@@ -1,4 +1,5 @@
 import type { z } from 'zod/v4';
+import { costSchema } from './cost.v1.js';
 import { portErrorSchema } from './errors.v1.js';
 import {
   markdownPointerSchema,
@@ -22,4 +23,5 @@ export const published: readonly {
   { name: 'record-pointer', major: 1, schema: recordPointerSchema },
   { name: 'markdown-pointer', major: 1, schema: markdownPointerSchema },
   { name: 'port-error', major: 1, schema: portErrorSchema },
+  { name: 'cost', major: 1, schema: costSchema },
 ];

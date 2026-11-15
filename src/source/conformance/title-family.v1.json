@@ -1,0 +1,758 @@
+{
+  "conformance": "source.title-family",
+  "version": "1.0.0",
+  "status": "ruled",
+  "table": {
+    "tableId": "events-marketing",
+    "version": "1.0.0"
+  },
+  "basis": [
+    "a job title's buyer family, derived at admission by a declared, versioned table; both runtimes evaluate it the same way"
+  ],
+  "rule": "Each vector's title is evaluated against input.table when the vector carries one, and otherwise against the table named in table (title-family/tables/<tableId>.v<major>.json), by title-family/EVALUATION.md: normalize (NFKD, combining marks dropped, lowercase, every run outside [a-z0-9] one space, trim; empty is absent), apply abbreviations token by token, then exclusions first (other), the first matching function, the first matching level (no level is other). An entry is normalized by the same steps, abbreviations included (an entry that normalizes to empty matches nothing), and matches as a contiguous whole-word token sequence. expect is the family, or absent when the title is absent or normalizes to empty.",
+  "vectors": [
+    {
+      "id": "TF-01",
+      "input": {
+        "title": "Head of Events"
+      },
+      "expect": {
+        "titleFamily": "events_exec"
+      }
+    },
+    {
+      "id": "TF-02",
+      "input": {
+        "title": "Events Director"
+      },
+      "expect": {
+        "titleFamily": "events_exec"
+      }
+    },
+    {
+      "id": "TF-03",
+      "input": {
+        "title": "Director of Events & Experiential"
+      },
+      "expect": {
+        "titleFamily": "events_exec"
+      }
+    },
+    {
+      "id": "TF-04",
+      "input": {
+        "title": "VP, Global Events"
+      },
+      "expect": {
+        "titleFamily": "events_exec"
+      }
+    },
+    {
+      "id": "TF-05",
+      "input": {
+        "title": "SVP Conferences"
+      },
+      "expect": {
+        "titleFamily": "events_exec"
+      }
+    },
+    {
+      "id": "TF-06",
+      "input": {
+        "title": "Chief Experience & Events Officer"
+      },
+      "expect": {
+        "titleFamily": "events_exec"
+      }
+    },
+    {
+      "id": "TF-07",
+      "input": {
+        "title": "Executive Director, Events"
+      },
+      "expect": {
+        "titleFamily": "events_exec"
+      }
+    },
+    {
+      "id": "TF-08",
+      "input": {
+        "title": "Head of Events & Marketing"
+      },
+      "expect": {
+        "titleFamily": "events_exec"
+      }
+    },
+    {
+      "id": "TF-09",
+      "input": {
+        "title": "Events Manager"
+      },
+      "expect": {
+        "titleFamily": "events_mgr"
+      }
+    },
+    {
+      "id": "TF-10",
+      "input": {
+        "title": "Senior Event Manager"
+      },
+      "expect": {
+        "titleFamily": "events_mgr"
+      }
+    },
+    {
+      "id": "TF-11",
+      "input": {
+        "title": "Event Coordinator"
+      },
+      "expect": {
+        "titleFamily": "events_mgr"
+      }
+    },
+    {
+      "id": "TF-12",
+      "input": {
+        "title": "Events Executive"
+      },
+      "expect": {
+        "titleFamily": "events_mgr"
+      }
+    },
+    {
+      "id": "TF-13",
+      "input": {
+        "title": "Conference Producer"
+      },
+      "expect": {
+        "titleFamily": "events_mgr"
+      }
+    },
+    {
+      "id": "TF-14",
+      "input": {
+        "title": "Meetings & Incentives Manager"
+      },
+      "expect": {
+        "titleFamily": "events_mgr"
+      }
+    },
+    {
+      "id": "TF-15",
+      "input": {
+        "title": "Events Lead"
+      },
+      "expect": {
+        "titleFamily": "events_mgr"
+      }
+    },
+    {
+      "id": "TF-16",
+      "input": {
+        "title": "Évènements Manager"
+      },
+      "expect": {
+        "titleFamily": "other"
+      }
+    },
+    {
+      "id": "TF-17",
+      "input": {
+        "title": "CMO"
+      },
+      "expect": {
+        "titleFamily": "mktg_exec"
+      }
+    },
+    {
+      "id": "TF-18",
+      "input": {
+        "title": "Chief Marketing Officer"
+      },
+      "expect": {
+        "titleFamily": "mktg_exec"
+      }
+    },
+    {
+      "id": "TF-19",
+      "input": {
+        "title": "VP Brand"
+      },
+      "expect": {
+        "titleFamily": "mktg_exec"
+      }
+    },
+    {
+      "id": "TF-20",
+      "input": {
+        "title": "Marketing Director"
+      },
+      "expect": {
+        "titleFamily": "mktg_exec"
+      }
+    },
+    {
+      "id": "TF-21",
+      "input": {
+        "title": "Head of Mktg"
+      },
+      "expect": {
+        "titleFamily": "mktg_exec"
+      }
+    },
+    {
+      "id": "TF-22",
+      "input": {
+        "title": "Communications Director"
+      },
+      "expect": {
+        "titleFamily": "mktg_exec"
+      }
+    },
+    {
+      "id": "TF-23",
+      "input": {
+        "title": "Director of Demand Generation"
+      },
+      "expect": {
+        "titleFamily": "mktg_exec"
+      }
+    },
+    {
+      "id": "TF-24",
+      "input": {
+        "title": "Marketing Manager"
+      },
+      "expect": {
+        "titleFamily": "mktg_mgr"
+      }
+    },
+    {
+      "id": "TF-25",
+      "input": {
+        "title": "Marketing Executive"
+      },
+      "expect": {
+        "titleFamily": "mktg_mgr"
+      }
+    },
+    {
+      "id": "TF-26",
+      "input": {
+        "title": "Brand Manager"
+      },
+      "expect": {
+        "titleFamily": "mktg_mgr"
+      }
+    },
+    {
+      "id": "TF-27",
+      "input": {
+        "title": "Field Marketing Lead"
+      },
+      "expect": {
+        "titleFamily": "mktg_mgr"
+      }
+    },
+    {
+      "id": "TF-28",
+      "input": {
+        "title": "Marketing Coordinator"
+      },
+      "expect": {
+        "titleFamily": "mktg_mgr"
+      }
+    },
+    {
+      "id": "TF-29",
+      "input": {
+        "title": "Sr. Mktg Mgr"
+      },
+      "expect": {
+        "titleFamily": "mktg_mgr"
+      }
+    },
+    {
+      "id": "TF-30",
+      "input": {
+        "title": "Chief Executive Officer"
+      },
+      "expect": {
+        "titleFamily": "other"
+      }
+    },
+    {
+      "id": "TF-31",
+      "input": {
+        "title": "Managing Director"
+      },
+      "expect": {
+        "titleFamily": "other"
+      }
+    },
+    {
+      "id": "TF-32",
+      "input": {
+        "title": "Sales Director"
+      },
+      "expect": {
+        "titleFamily": "other"
+      }
+    },
+    {
+      "id": "TF-33",
+      "input": {
+        "title": "Hospitality Manager"
+      },
+      "expect": {
+        "titleFamily": "other"
+      }
+    },
+    {
+      "id": "TF-34",
+      "input": {
+        "title": "Prevention Officer"
+      },
+      "expect": {
+        "titleFamily": "other"
+      }
+    },
+    {
+      "id": "TF-35",
+      "input": {
+        "title": "Marketing Intern"
+      },
+      "expect": {
+        "titleFamily": "other"
+      }
+    },
+    {
+      "id": "TF-36",
+      "input": {
+        "title": "Events Assistant"
+      },
+      "expect": {
+        "titleFamily": "other"
+      }
+    },
+    {
+      "id": "TF-37",
+      "input": {
+        "title": "Marketing"
+      },
+      "expect": {
+        "titleFamily": "other"
+      }
+    },
+    {
+      "id": "TF-38",
+      "input": {
+        "title": "Events"
+      },
+      "expect": {
+        "titleFamily": "other"
+      }
+    },
+    {
+      "id": "TF-39",
+      "input": {
+        "title": "Event Marketing Consultant"
+      },
+      "expect": {
+        "titleFamily": "other"
+      }
+    },
+    {
+      "id": "TF-40",
+      "input": {
+        "title": "Chief of Staff, Events"
+      },
+      "expect": {
+        "titleFamily": "other"
+      }
+    },
+    {
+      "id": "TF-41",
+      "input": {
+        "title": "Director, Event Technology"
+      },
+      "expect": {
+        "titleFamily": "events_exec"
+      }
+    },
+    {
+      "id": "TF-42",
+      "input": {
+        "title": "Head of Marketing Events"
+      },
+      "expect": {
+        "titleFamily": "events_exec"
+      }
+    },
+    {
+      "id": "TF-43",
+      "input": {
+        "title": "Marketing & Events Director"
+      },
+      "expect": {
+        "titleFamily": "events_exec"
+      }
+    },
+    {
+      "id": "TF-44",
+      "input": {
+        "title": "Executive Assistant to the CMO"
+      },
+      "expect": {
+        "titleFamily": "other"
+      }
+    },
+    {
+      "id": "TF-45",
+      "input": {
+        "title": "Lead Generation Manager"
+      },
+      "expect": {
+        "titleFamily": "other"
+      }
+    },
+    {
+      "id": "TF-46",
+      "input": {
+        "title": "Events Programme Manager"
+      },
+      "expect": {
+        "titleFamily": "events_mgr"
+      }
+    },
+    {
+      "id": "TF-47",
+      "input": {
+        "title": ""
+      },
+      "expect": {
+        "absent": true
+      }
+    },
+    {
+      "id": "TF-48",
+      "input": {
+        "title": "   "
+      },
+      "expect": {
+        "absent": true
+      }
+    },
+    {
+      "id": "TF-49",
+      "input": {
+        "title": null
+      },
+      "expect": {
+        "absent": true
+      }
+    },
+    {
+      "id": "TF-50",
+      "input": {
+        "title": "Marketing Manager",
+        "table": {
+          "table_id": "fixture-abbreviated-entries",
+          "version": "1.0.0",
+          "families": [
+            "mktg_mgr",
+            "other"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            }
+          ],
+          "exclusions": [],
+          "functions": [
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "mktg"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "mgr"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "titleFamily": "mktg_mgr"
+      },
+      "why": "entries normalize like a title, abbreviations included: the entries mktg and mgr become marketing and manager, so they match the title spelled out"
+    },
+    {
+      "id": "TF-51",
+      "input": {
+        "title": "Mktg Mgr",
+        "table": {
+          "table_id": "fixture-abbreviated-entries",
+          "version": "1.0.0",
+          "families": [
+            "mktg_mgr",
+            "other"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            }
+          ],
+          "exclusions": [],
+          "functions": [
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "mktg"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "mgr"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "titleFamily": "mktg_mgr"
+      },
+      "why": "and the abbreviated title, normalized the same way, matches them too"
+    },
+    {
+      "id": "TF-52",
+      "input": {
+        "title": "Marketing Manager",
+        "table": {
+          "table_id": "fixture-empty-entry",
+          "version": "1.0.0",
+          "families": [
+            "mktg_mgr",
+            "other"
+          ],
+          "abbreviations": [
+            {
+              "token": "mktg",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mkt",
+              "replacement": "marketing"
+            },
+            {
+              "token": "mgr",
+              "replacement": "manager"
+            },
+            {
+              "token": "dir",
+              "replacement": "director"
+            },
+            {
+              "token": "comms",
+              "replacement": "communications"
+            },
+            {
+              "token": "hd",
+              "replacement": "head"
+            },
+            {
+              "token": "exec",
+              "replacement": "executive"
+            },
+            {
+              "token": "snr",
+              "replacement": "senior"
+            },
+            {
+              "token": "sr",
+              "replacement": "senior"
+            },
+            {
+              "token": "svp",
+              "replacement": "vp"
+            },
+            {
+              "token": "evp",
+              "replacement": "vp"
+            },
+            {
+              "token": "avp",
+              "replacement": "vp"
+            },
+            {
+              "token": "programme",
+              "replacement": "program"
+            }
+          ],
+          "exclusions": [
+            "&"
+          ],
+          "functions": [
+            {
+              "family_prefix": "mktg",
+              "tokens": [
+                "marketing"
+              ]
+            }
+          ],
+          "levels": [
+            {
+              "suffix": "mgr",
+              "tokens": [
+                "manager"
+              ]
+            }
+          ],
+          "no_level": "other"
+        }
+      },
+      "expect": {
+        "titleFamily": "mktg_mgr"
+      },
+      "why": "an entry that normalizes to empty (the exclusion &) matches nothing; it does not match every title"
+    },
+    {
+      "id": "TF-53",
+      "input": {
+        "title": "Évent Plánner"
+      },
+      "expect": {
+        "titleFamily": "events_mgr"
+      },
+      "why": "accents fold before matching: \"évent plánner\" is \"event planner\", an events title at the manager level; without the fold it is other"
+    },
+    {
+      "id": "TF-54",
+      "input": {
+        "title": "Vice Chair, Marketing President"
+      },
+      "expect": {
+        "titleFamily": "other"
+      },
+      "why": "a multi-token entry matches only as a contiguous sequence: \"vice\" and \"president\" apart are not \"vice president\", so a marketing title has no level"
+    },
+    {
+      "id": "TF-55",
+      "input": {
+        "title": "President Vice, Marketing"
+      },
+      "expect": {
+        "titleFamily": "other"
+      },
+      "why": "a multi-token entry's tokens out of order do not match it"
+    }
+  ]
+}

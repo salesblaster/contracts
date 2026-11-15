@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:source:title-family-table:v1",
+  "type": "object",
+  "properties": {
+    "table_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "families": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "abbreviations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "replacement": {
+            "type": "string"
+          }
+        },
+        "required": ["token", "replacement"],
+        "additionalProperties": false
+      }
+    },
+    "exclusions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "functions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "family_prefix": {
+            "type": "string"
+          },
+          "tokens": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["family_prefix", "tokens"],
+        "additionalProperties": false
+      }
+    },
+    "levels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "suffix": {
+            "type": "string"
+          },
+          "tokens": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["suffix", "tokens"],
+        "additionalProperties": false
+      }
+    },
+    "no_level": {
+      "type": "string",
+      "enum": ["other"]
+    }
+  },
+  "required": [
+    "table_id",
+    "version",
+    "families",
+    "abbreviations",
+    "exclusions",
+    "functions",
+    "levels",
+    "no_level"
+  ],
+  "additionalProperties": false
+}

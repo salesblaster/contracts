@@ -1,0 +1,132 @@
+{
+  "table_id": "events-marketing",
+  "version": "1.0.0",
+  "families": ["events_exec", "events_mgr", "mktg_exec", "mktg_mgr", "other"],
+  "abbreviations": [
+    {
+      "token": "mktg",
+      "replacement": "marketing"
+    },
+    {
+      "token": "mkt",
+      "replacement": "marketing"
+    },
+    {
+      "token": "mgr",
+      "replacement": "manager"
+    },
+    {
+      "token": "dir",
+      "replacement": "director"
+    },
+    {
+      "token": "comms",
+      "replacement": "communications"
+    },
+    {
+      "token": "hd",
+      "replacement": "head"
+    },
+    {
+      "token": "exec",
+      "replacement": "executive"
+    },
+    {
+      "token": "snr",
+      "replacement": "senior"
+    },
+    {
+      "token": "sr",
+      "replacement": "senior"
+    },
+    {
+      "token": "svp",
+      "replacement": "vp"
+    },
+    {
+      "token": "evp",
+      "replacement": "vp"
+    },
+    {
+      "token": "avp",
+      "replacement": "vp"
+    },
+    {
+      "token": "programme",
+      "replacement": "program"
+    }
+  ],
+  "exclusions": [
+    "chief of staff",
+    "intern",
+    "internship",
+    "assistant",
+    "apprentice",
+    "trainee",
+    "student",
+    "graduate",
+    "volunteer",
+    "freelance",
+    "freelancer",
+    "consultant"
+  ],
+  "functions": [
+    {
+      "family_prefix": "events",
+      "tokens": [
+        "event",
+        "events",
+        "experiential",
+        "conference",
+        "conferences",
+        "meetings",
+        "incentive",
+        "incentives"
+      ]
+    },
+    {
+      "family_prefix": "mktg",
+      "tokens": [
+        "marketing",
+        "brand",
+        "communications",
+        "demand generation",
+        "cmo"
+      ]
+    }
+  ],
+  "levels": [
+    {
+      "suffix": "exec",
+      "tokens": [
+        "chief",
+        "cmo",
+        "vp",
+        "vice president",
+        "head",
+        "director",
+        "executive director",
+        "managing director",
+        "chief executive",
+        "executive vice president"
+      ]
+    },
+    {
+      "suffix": "mgr",
+      "tokens": [
+        "manager",
+        "lead",
+        "leader",
+        "coordinator",
+        "planner",
+        "producer",
+        "specialist",
+        "officer",
+        "executive",
+        "programmer",
+        "program manager"
+      ]
+    }
+  ],
+  "no_level": "other"
+}

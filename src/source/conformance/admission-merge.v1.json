@@ -1,0 +1,568 @@
+{
+  "conformance": "source.admission-merge",
+  "version": "1.0.0",
+  "status": "ruled",
+  "basis": [
+    "a batch's rows merge by the email account key alone: the first row that is not refused is the prospect, and a later row only fills what the prospect lacks"
+  ],
+  "rule": "admit(input) over input.rows under input.declaredFields, with input.titleFamilyTable when present. A row keeps only its declared fields; a value is absent when it is missing, empty, white space only, or normalizes to nothing. In input order, a row with no present declared value is refused no_field_survived_allow_list, then one with no email no_identifying_field, then one whose email has no core.email-account-key invalid_email. Rows group only by core.email-account-key: the first row of a group that is not refused is the prospect, and each later row fills only fields the prospect lacks, never replacing a held value, and counts once as duplicate_in_batch. titleFamily is the table's family for the prospect's surviving title. expect.prospects lists each prospect's emailAccountKey and present fields, in contracts/source's names; expect.counts is the batch's counts; no value in expect.appearsNowhere occurs in any output. Values are given already normalized: per-field normalization of the fields compared as deterministic is not specified here and follows in a later version. The merge is within one batch: it names no survivorship mechanism, and matching a prospect to another source's record or to an existing person stays each runtime's own.",
+  "vectors": [
+    {
+      "id": "AM-01",
+      "input": {
+        "declaredFields": [
+          "email",
+          "title",
+          "phone"
+        ],
+        "rows": [
+          {
+            "email": "ada@example.com",
+            "title": "Head of Events"
+          },
+          {
+            "email": "ada@example.com",
+            "phone": "+442079460100"
+          }
+        ]
+      },
+      "expect": {
+        "prospects": [
+          {
+            "emailAccountKey": "ada@example.com",
+            "title": "Head of Events",
+            "phone": "+442079460100"
+          }
+        ],
+        "counts": {
+          "in": 2,
+          "admitted": 1,
+          "rejected": {
+            "no_field_survived_allow_list": 0,
+            "no_identifying_field": 0,
+            "invalid_email": 0,
+            "duplicate_in_batch": 1
+          }
+        }
+      },
+      "why": "a later row fills a field the prospect lacks: the phone"
+    },
+    {
+      "id": "AM-02",
+      "input": {
+        "declaredFields": [
+          "email",
+          "title"
+        ],
+        "rows": [
+          {
+            "email": "bo@example.com",
+            "title": "Marketing Manager"
+          },
+          {
+            "email": "bo@example.com",
+            "title": "Senior Director of Global Marketing"
+          }
+        ]
+      },
+      "expect": {
+        "prospects": [
+          {
+            "emailAccountKey": "bo@example.com",
+            "title": "Marketing Manager"
+          }
+        ],
+        "counts": {
+          "in": 2,
+          "admitted": 1,
+          "rejected": {
+            "no_field_survived_allow_list": 0,
+            "no_identifying_field": 0,
+            "invalid_email": 0,
+            "duplicate_in_batch": 1
+          }
+        },
+        "appearsNowhere": [
+          "Senior Director of Global Marketing"
+        ]
+      },
+      "why": "a held value is never replaced, even by a longer one, and the merged-away title appears nowhere"
+    },
+    {
+      "id": "AM-03",
+      "input": {
+        "declaredFields": [
+          "email",
+          "title",
+          "phone"
+        ],
+        "rows": [
+          {
+            "email": "cy@example.com",
+            "title": "Head of Events"
+          },
+          {
+            "email": "cy@example.com",
+            "phone": "+442079460101"
+          },
+          {
+            "email": "cy@example.com",
+            "title": "Marketing Manager",
+            "phone": "+442079460102"
+          }
+        ]
+      },
+      "expect": {
+        "prospects": [
+          {
+            "emailAccountKey": "cy@example.com",
+            "title": "Head of Events",
+            "phone": "+442079460101"
+          }
+        ],
+        "counts": {
+          "in": 3,
+          "admitted": 1,
+          "rejected": {
+            "no_field_survived_allow_list": 0,
+            "no_identifying_field": 0,
+            "invalid_email": 0,
+            "duplicate_in_batch": 2
+          }
+        },
+        "appearsNowhere": [
+          "+442079460102",
+          "Marketing Manager"
+        ]
+      },
+      "why": "three rows: the second fills the phone, and the third fills nothing because both fields are held"
+    },
+    {
+      "id": "AM-04",
+      "input": {
+        "declaredFields": [
+          "email",
+          "title",
+          "phone"
+        ],
+        "rows": [
+          {
+            "email": "dee@example.com",
+            "title": "Head of Events"
+          },
+          {
+            "email": "dee+news@example.com",
+            "phone": "+442079460103"
+          }
+        ]
+      },
+      "expect": {
+        "prospects": [
+          {
+            "emailAccountKey": "dee@example.com",
+            "title": "Head of Events",
+            "phone": "+442079460103"
+          }
+        ],
+        "counts": {
+          "in": 2,
+          "admitted": 1,
+          "rejected": {
+            "no_field_survived_allow_list": 0,
+            "no_identifying_field": 0,
+            "invalid_email": 0,
+            "duplicate_in_batch": 1
+          }
+        }
+      },
+      "why": "a plus tag collapses to the base mailbox, so the pair is one prospect"
+    },
+    {
+      "id": "AM-05",
+      "input": {
+        "declaredFields": [
+          "email",
+          "title"
+        ],
+        "rows": [
+          {
+            "email": "jose@example.com",
+            "title": "Head of Events"
+          },
+          {
+            "email": "josé@example.com",
+            "title": "Marketing Manager"
+          }
+        ]
+      },
+      "expect": {
+        "prospects": [
+          {
+            "emailAccountKey": "jose@example.com",
+            "title": "Head of Events"
+          },
+          {
+            "emailAccountKey": "josé@example.com",
+            "title": "Marketing Manager"
+          }
+        ],
+        "counts": {
+          "in": 2,
+          "admitted": 2,
+          "rejected": {
+            "no_field_survived_allow_list": 0,
+            "no_identifying_field": 0,
+            "invalid_email": 0,
+            "duplicate_in_batch": 0
+          }
+        }
+      },
+      "why": "the key folds no accent, so an accented and an unaccented local part are two prospects"
+    },
+    {
+      "id": "AM-06",
+      "input": {
+        "declaredFields": [
+          "email",
+          "title",
+          "phone"
+        ],
+        "titleFamilyTable": {
+          "tableId": "events-marketing",
+          "version": "1.0.0"
+        },
+        "rows": [
+          {
+            "email": "eve@example.com",
+            "title": "   ",
+            "phone": "+442079460104"
+          },
+          {
+            "email": "eve@example.com",
+            "title": "Marketing Manager"
+          }
+        ]
+      },
+      "expect": {
+        "prospects": [
+          {
+            "emailAccountKey": "eve@example.com",
+            "title": "Marketing Manager",
+            "titleFamily": "mktg_mgr",
+            "phone": "+442079460104"
+          }
+        ],
+        "counts": {
+          "in": 2,
+          "admitted": 1,
+          "rejected": {
+            "no_field_survived_allow_list": 0,
+            "no_identifying_field": 0,
+            "invalid_email": 0,
+            "duplicate_in_batch": 1
+          }
+        }
+      },
+      "why": "a title of white space only is absent, so a later row fills it, and titleFamily follows the title that survives"
+    },
+    {
+      "id": "AM-07",
+      "input": {
+        "declaredFields": [
+          "email",
+          "phone",
+          "linkedinUrl"
+        ],
+        "rows": [
+          {
+            "email": "fay@example.com",
+            "phone": "+442079460105",
+            "linkedinUrl": "https://www.linkedin.com/in/shared-example"
+          },
+          {
+            "email": "gus@example.com",
+            "phone": "+442079460105",
+            "linkedinUrl": "https://www.linkedin.com/in/shared-example"
+          }
+        ]
+      },
+      "expect": {
+        "prospects": [
+          {
+            "emailAccountKey": "fay@example.com",
+            "phone": "+442079460105",
+            "linkedinUrl": "https://www.linkedin.com/in/shared-example"
+          },
+          {
+            "emailAccountKey": "gus@example.com",
+            "phone": "+442079460105",
+            "linkedinUrl": "https://www.linkedin.com/in/shared-example"
+          }
+        ],
+        "counts": {
+          "in": 2,
+          "admitted": 2,
+          "rejected": {
+            "no_field_survived_allow_list": 0,
+            "no_identifying_field": 0,
+            "invalid_email": 0,
+            "duplicate_in_batch": 0
+          }
+        }
+      },
+      "why": "rows group only by the email account key: two mailboxes sharing a phone and a LinkedIn URL are two prospects"
+    },
+    {
+      "id": "AM-08",
+      "input": {
+        "declaredFields": [
+          "email",
+          "title"
+        ],
+        "rows": [
+          {
+            "email": "hal@example.com",
+            "title": "Head of Events"
+          },
+          {
+            "email": "hal@example.com",
+            "phone": "+442079460106"
+          }
+        ]
+      },
+      "expect": {
+        "prospects": [
+          {
+            "emailAccountKey": "hal@example.com",
+            "title": "Head of Events"
+          }
+        ],
+        "counts": {
+          "in": 2,
+          "admitted": 1,
+          "rejected": {
+            "no_field_survived_allow_list": 0,
+            "no_identifying_field": 0,
+            "invalid_email": 0,
+            "duplicate_in_batch": 1
+          }
+        },
+        "appearsNowhere": [
+          "+442079460106"
+        ]
+      },
+      "why": "a field outside the declared set never enters, not even by merge: the phone stays absent and appears nowhere"
+    },
+    {
+      "id": "AM-09",
+      "input": {
+        "declaredFields": [
+          "email",
+          "title"
+        ],
+        "titleFamilyTable": {
+          "tableId": "events-marketing",
+          "version": "1.0.0"
+        },
+        "rows": [
+          {
+            "email": "ivy@example.com",
+            "title": "Head of Events"
+          },
+          {
+            "email": "ivy@example.com",
+            "title": "Marketing Manager"
+          }
+        ]
+      },
+      "expect": {
+        "prospects": [
+          {
+            "emailAccountKey": "ivy@example.com",
+            "title": "Head of Events",
+            "titleFamily": "events_exec"
+          }
+        ],
+        "counts": {
+          "in": 2,
+          "admitted": 1,
+          "rejected": {
+            "no_field_survived_allow_list": 0,
+            "no_identifying_field": 0,
+            "invalid_email": 0,
+            "duplicate_in_batch": 1
+          }
+        },
+        "appearsNowhere": [
+          "Marketing Manager"
+        ]
+      },
+      "why": "titleFamily follows the surviving title, the first row's, not the later row's"
+    },
+    {
+      "id": "AM-10",
+      "input": {
+        "declaredFields": [
+          "email",
+          "firstName"
+        ],
+        "rows": [
+          {
+            "email": "not-an-email",
+            "firstName": "Zzsentinel"
+          },
+          {
+            "email": "jo@example.com",
+            "firstName": "Jo"
+          }
+        ]
+      },
+      "expect": {
+        "prospects": [
+          {
+            "emailAccountKey": "jo@example.com",
+            "firstName": "Jo"
+          }
+        ],
+        "counts": {
+          "in": 2,
+          "admitted": 1,
+          "rejected": {
+            "no_field_survived_allow_list": 0,
+            "no_identifying_field": 0,
+            "invalid_email": 1,
+            "duplicate_in_batch": 0
+          }
+        },
+        "appearsNowhere": [
+          "Zzsentinel"
+        ]
+      },
+      "why": "a refused row's values appear nowhere, and a refused row is not the prospect"
+    },
+    {
+      "id": "AM-11",
+      "input": {
+        "declaredFields": [
+          "email",
+          "firstName",
+          "linkedinUrl"
+        ],
+        "rows": [
+          {
+            "email": "kim@example.com",
+            "firstName": "Kim",
+            "linkedinUrl": "   "
+          },
+          {
+            "email": "kim@example.com",
+            "linkedinUrl": "https://www.linkedin.com/in/kim-example"
+          }
+        ]
+      },
+      "expect": {
+        "prospects": [
+          {
+            "emailAccountKey": "kim@example.com",
+            "firstName": "Kim",
+            "linkedinUrl": "https://www.linkedin.com/in/kim-example"
+          }
+        ],
+        "counts": {
+          "in": 2,
+          "admitted": 1,
+          "rejected": {
+            "no_field_survived_allow_list": 0,
+            "no_identifying_field": 0,
+            "invalid_email": 0,
+            "duplicate_in_batch": 1
+          }
+        }
+      },
+      "why": "white space only is absent in a field that is otherwise passed through as given, so a later row fills it"
+    },
+    {
+      "id": "AM-12",
+      "input": {
+        "declaredFields": [
+          "email",
+          "firstName"
+        ],
+        "rows": [
+          {
+            "companyName": "Zzallowlist"
+          },
+          {
+            "firstName": "Zznoemail"
+          },
+          {
+            "email": "mo@example.com",
+            "firstName": "Mo"
+          }
+        ]
+      },
+      "expect": {
+        "prospects": [
+          {
+            "emailAccountKey": "mo@example.com",
+            "firstName": "Mo"
+          }
+        ],
+        "counts": {
+          "in": 3,
+          "admitted": 1,
+          "rejected": {
+            "no_field_survived_allow_list": 1,
+            "no_identifying_field": 1,
+            "invalid_email": 0,
+            "duplicate_in_batch": 0
+          }
+        },
+        "appearsNowhere": [
+          "Zzallowlist",
+          "Zznoemail"
+        ]
+      },
+      "why": "the refusals run in order: a row with no declared value, email included, is no_field_survived_allow_list, and a row with a declared value but no email is no_identifying_field; neither row's values appear"
+    },
+    {
+      "id": "AM-13",
+      "input": {
+        "declaredFields": [
+          "email",
+          "firstName"
+        ],
+        "rows": [
+          {
+            "email": "not-an-email",
+            "firstName": "Zzrefusedleak"
+          },
+          {
+            "email": "lu@example.com"
+          }
+        ]
+      },
+      "expect": {
+        "prospects": [
+          {
+            "emailAccountKey": "lu@example.com"
+          }
+        ],
+        "counts": {
+          "in": 2,
+          "admitted": 1,
+          "rejected": {
+            "no_field_survived_allow_list": 0,
+            "no_identifying_field": 0,
+            "invalid_email": 1,
+            "duplicate_in_batch": 0
+          }
+        },
+        "appearsNowhere": [
+          "Zzrefusedleak"
+        ]
+      },
+      "why": "a refused row fills nothing: the later prospect lacks firstName, and the invalid_email row's firstName still appears nowhere"
+    }
+  ]
+}

@@ -20,3 +20,5 @@ export const published: readonly {
   { name: 'lead-scored', major: 1, schema: leadScoredSchema },
   { name: 'rubric-bands', major: 1, schema: rubricBandsSchema },
 ];
+
+// The organization financial observation candidate is HELD: deliberately unregistered.

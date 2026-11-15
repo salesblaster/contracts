@@ -4,3 +4,5 @@ export * from './calibration.v1.js';
 export * from './lead.v1.js';
 export * from './lead-scored.v1.js';
 export * from './rubric-bands.v1.js';
+export * from './verification-provider.port.js';
+// The organization financial observation candidate is HELD: deliberately unexported.

@@ -1,0 +1,1017 @@
+{
+  "conformance": "source.admitted-prospect-batch",
+  "version": "1.0.0",
+  "status": "ruled",
+  "basis": [
+    "the admitted-prospect batch's producer invariants"
+  ],
+  "rule": "1: every prospect has globalContactId, emailAccountKey and email, and emailAccountKey equals key(email). 2: no value is null or an empty string. 3: declaration.fields is present exactly when declaration.fieldSet is declared; when declared, each carried field a prospect holds (email, firstName, lastName, fullName, title, phone, linkedinUrl, companyName, companyDomain) is in declaration.fields, titleFamily appears only if title is, and globalCompanyId only if companyDomain is; globalContactId, emailAccountKey and provenance are not counted. 4: titleFamily is present only when declaration.titleFamilyTable is set, and is one of context.title_family_families, that table's closed families. 5: a prospect has no key outside globalContactId, emailAccountKey, email, firstName, lastName, fullName, title, titleFamily, phone, linkedinUrl, companyName, companyDomain, globalCompanyId and provenance, and provenance holds only acquisitionSource and acquisitionRef. 6: counts.admitted equals the number of prospects, and counts.in equals admitted plus the sum of counts.rejected. 7: emailAccountKey is unique in the batch (how a batch's rows merge is conformance/source/admission-merge.v1.json). 8: every time matches the timestamp pattern. Expect is holds, or the lowest-numbered invariant violated.",
+  "vectors": [
+    {
+      "id": "B-01",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared"
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              }
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "one admitted prospect, one rejection"
+    },
+    {
+      "id": "B-02",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared"
+          },
+          "prospects": [],
+          "counts": {
+            "in": 0,
+            "admitted": 0,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 0,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "an empty batch is valid and says so"
+    },
+    {
+      "id": "B-03",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared"
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              }
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "violates": 1
+      },
+      "why": "a prospect without email"
+    },
+    {
+      "id": "B-04",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared"
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "bob@example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              }
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "violates": 1
+      },
+      "why": "emailAccountKey is not the key of email"
+    },
+    {
+      "id": "B-05",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared"
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              },
+              "title": null
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "violates": 2
+      },
+      "why": "a null value"
+    },
+    {
+      "id": "B-06",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared"
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              },
+              "companyName": ""
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "violates": 2
+      },
+      "why": "an empty string"
+    },
+    {
+      "id": "B-07",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "declared",
+            "fields": [
+              "email",
+              "firstName",
+              "lastName"
+            ]
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              },
+              "firstName": "Ada",
+              "lastName": "Lovelace"
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "a declaring tenant's prospect carries only declared fields"
+    },
+    {
+      "id": "B-08",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "declared",
+            "fields": [
+              "email",
+              "firstName",
+              "lastName"
+            ]
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              },
+              "firstName": "Ada",
+              "title": "Head of Events"
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "violates": 3
+      },
+      "why": "title is outside the declared set"
+    },
+    {
+      "id": "B-09",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared"
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              },
+              "title": "Head of Events",
+              "titleFamily": "events_exec"
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "violates": 4
+      },
+      "why": "titleFamily without a titleFamilyTable"
+    },
+    {
+      "id": "B-10",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared",
+            "titleFamilyTable": {
+              "tableId": "events-marketing",
+              "version": "1.0.0"
+            }
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              },
+              "title": "Head of Events",
+              "titleFamily": "events_exec"
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        },
+        "context": {
+          "title_family_families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "mktg_mgr",
+            "other"
+          ]
+        }
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "titleFamily in the selected table's families"
+    },
+    {
+      "id": "B-11",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared",
+            "titleFamilyTable": {
+              "tableId": "events-marketing",
+              "version": "1.0.0"
+            }
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              },
+              "title": "Head of Events",
+              "titleFamily": "other"
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        },
+        "context": {
+          "title_family_families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "mktg_mgr",
+            "other"
+          ]
+        }
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "other is one of the closed families (the review's A-7)"
+    },
+    {
+      "id": "B-12",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared",
+            "titleFamilyTable": {
+              "tableId": "events-marketing",
+              "version": "1.0.0"
+            }
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              },
+              "title": "Head of Events",
+              "titleFamily": "sales_exec"
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        },
+        "context": {
+          "title_family_families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "mktg_mgr",
+            "other"
+          ]
+        }
+      },
+      "expect": {
+        "violates": 4
+      },
+      "why": "a family the table does not list"
+    },
+    {
+      "id": "B-13",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared"
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              },
+              "variables": {
+                "first_line": "Hi"
+              }
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "violates": 5
+      },
+      "why": "the free bag on the published face"
+    },
+    {
+      "id": "B-14",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared"
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture",
+                "sourceRecordId": "rec-77"
+              }
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "violates": 5
+      },
+      "why": "a source record id in provenance"
+    },
+    {
+      "id": "B-15",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared"
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              }
+            }
+          ],
+          "counts": {
+            "in": 3,
+            "admitted": 2,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "violates": 6
+      },
+      "why": "counts.admitted differs from prospects.length"
+    },
+    {
+      "id": "B-16",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared"
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              }
+            }
+          ],
+          "counts": {
+            "in": 5,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "violates": 6
+      },
+      "why": "counts.in differs from admitted plus every rejected count"
+    },
+    {
+      "id": "B-17",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared"
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              }
+            },
+            {
+              "globalContactId": "gc-0002",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              }
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 2,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 0,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "violates": 7
+      },
+      "why": "the same emailAccountKey twice in one batch"
+    },
+    {
+      "id": "B-18",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00Z",
+          "declaration": {
+            "fieldSet": "undeclared"
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              }
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "violates": 8
+      },
+      "why": "a time without milliseconds"
+    },
+    {
+      "id": "B-19",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "declared",
+            "fields": [
+              "email",
+              "firstName",
+              "lastName"
+            ]
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              },
+              "firstName": "Ada",
+              "lastName": "Lovelace",
+              "globalCompanyId": "gco-0001"
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "violates": 3
+      },
+      "why": "a derived globalCompanyId whose companyDomain is not declared"
+    },
+    {
+      "id": "B-20",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "declared",
+            "fields": [
+              "email",
+              "firstName",
+              "lastName",
+              "companyDomain"
+            ]
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              },
+              "firstName": "Ada",
+              "lastName": "Lovelace",
+              "companyDomain": "example.com",
+              "globalCompanyId": "gco-0001"
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "globalCompanyId with companyDomain declared and present"
+    },
+    {
+      "id": "B-21",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "declared"
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              },
+              "firstName": "Ada",
+              "lastName": "Lovelace"
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "violates": 3
+      },
+      "why": "a declared field set without declaration.fields"
+    },
+    {
+      "id": "B-22",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "undeclared",
+            "fields": [
+              "email"
+            ]
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              }
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        }
+      },
+      "expect": {
+        "violates": 3
+      },
+      "why": "declaration.fields on an undeclared field set"
+    },
+    {
+      "id": "B-23",
+      "input": {
+        "batch": {
+          "shape": "source.admitted-prospect-batch",
+          "schemaVersion": 1,
+          "tenantId": "tenant-0001",
+          "admissionId": "adm-0001",
+          "admittedAt": "2026-11-04T05:00:00.000Z",
+          "declaration": {
+            "fieldSet": "declared",
+            "fields": [
+              "email",
+              "firstName",
+              "lastName"
+            ],
+            "titleFamilyTable": {
+              "tableId": "events-marketing",
+              "version": "1.0.0"
+            }
+          },
+          "prospects": [
+            {
+              "globalContactId": "gc-0001",
+              "emailAccountKey": "ada@example.com",
+              "email": "Ada+acme@Example.com",
+              "provenance": {
+                "acquisitionSource": "fixture"
+              },
+              "firstName": "Ada",
+              "lastName": "Lovelace",
+              "titleFamily": "other"
+            }
+          ],
+          "counts": {
+            "in": 2,
+            "admitted": 1,
+            "rejected": {
+              "no_field_survived_allow_list": 0,
+              "no_identifying_field": 0,
+              "invalid_email": 1,
+              "duplicate_in_batch": 0
+            }
+          }
+        },
+        "context": {
+          "title_family_families": [
+            "events_exec",
+            "events_mgr",
+            "mktg_exec",
+            "mktg_mgr",
+            "other"
+          ]
+        }
+      },
+      "expect": {
+        "violates": 3
+      },
+      "why": "a derived titleFamily whose title is not declared, though a table is set"
+    }
+  ]
+}

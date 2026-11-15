@@ -15,10 +15,12 @@ scoring weight or threshold.
 |---|---|
 | `@salesblaster/contracts/core` | the field grammar's core types, record ids and pointers, the vendor-neutral error arms, and `ocp-core`'s record-bytes check |
 | `@salesblaster/contracts/enrich` | `Lead` and `VerifiedLead`, the one lead shape and the lead with its email verdict; `LeadScored`, the payload of `lead.scored.v1`; `RubricBands`, the labels a rubric version declares; `GraderCalibration`, the bar table for one grader configuration; and the calibration predicate `checkCalibration` (with `isCalibrated` and `graderConfigurationOf`), which takes a score's own grades |
+| `@salesblaster/contracts/source` | `AdmittedProspect` and `AdmittedProspectBatch`, one lead as admission hands it to enrichment and the batch that carries it; `RejectReason`; and `TitleFamilyTable` and its reference, the declared, versioned table a job title's buyer family is derived by |
+| `@salesblaster/contracts/campaigns` | the sequencer ports as one runtime splits them (lead upload, launch, transition between campaigns, suppression mirror), with predicates over an adapter's upload and blocklist answers |
 | `@salesblaster/contracts/schemas/<context>/<schema>.v<major>.json` | the generated JSON Schemas |
 | `@salesblaster/contracts/conformance/<context>/<name>.v<major>.json` | conformance vectors: inputs and expected results a runtime must reproduce |
 
-More contexts (`source`, `campaigns`, `sdr`, `crm`) are added as they are published.
+More contexts (`sdr`, `crm`) are added as they are published.
 
 ## Names and majors
 
@@ -48,8 +50,11 @@ ships it as vectors: each file names its rule in prose and lists inputs with the
 `core/email-account-key` is the identity key two runtimes join their records on; `source/predicate` is the
 three-valued logic a segment predicate is evaluated under; `enrich/calibration` is the calibration predicate;
 `enrich/lead`, `enrich/lead-scored` and `enrich/rubric-bands` are the rules each shape's producer keeps that its schema
-cannot state, `lead-scored`'s composite arithmetic included. A vector that breaks a rule names it by a name its file's
-rule defines. Only ruled vectors ship.
+cannot state, `lead-scored`'s composite arithmetic included. `core/cost` holds a cost's invariants, and
+`enrich/verdict-for-key` is how one email-account-key's verdict is derived from its variants'. `source/admitted-prospect-batch`,
+`source/admission-merge`, `source/title-family` and `source/title-family-table` are admission's batch invariants, its
+within-batch merge, and the title-family table and its load check. A vector that breaks a rule names it by a name its
+file's rule defines. Only ruled vectors ship.
 
 ## Zod
 

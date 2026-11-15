@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.2.0 (2026-11-15)
+
+Additive (minor): two new entry points, new shapes and ports in `core` and `enrich`, and new conformance vectors. Every
+0.1.0 file and name is unchanged.
+
+- `core`: `PortResult<T>`, a port's answer (a value or a `PortError`; a port never throws across the seam), and
+  `MeteredPortResult<T>`, whose two arms both carry a required `cost: Cost | null` (`null` means the call billed
+  nothing). `Cost`, `CostUnitKind` and `CostBasis`, with `costSchema` (`schemas/core/cost.v1.json`) and its vectors
+  (`conformance/core/cost.v1.json`). The schema refuses a value that breaks any of its four invariants.
+- `enrich`: `VerificationProviderPort`, a metered port with one verdict per distinct submitted address. An address
+  the vendor did not answer is `unknown`, never absent. `EmailVerificationVerdict`; `checkVerificationVerdicts`, a
+  check of an adapter's verdicts against the submitted addresses; and `verdictForKey`, one email-account-key's
+  verdict derived from its variants' observed verdicts, with its vectors (`conformance/enrich/verdict-for-key.v1.json`).
+- `campaigns`, a new entry point: `ExternalSequencerLeadUploadPort`, `SequencerLaunchPort` (`sending`, `not_found`
+  or `not_startable`), `ExternalCampaignTransitionPort` and `ExternalSuppressionMirrorPort`, with `SequencerLead` and
+  their outcome types. `checkSequencerUploadResults` and `checkBlocklistEntries` are predicates over an adapter's
+  output, not dispositions: the consumer decides what a result that does not hold means. The four upload outcomes are
+  part of the contract, so a fifth is a new major.
+- `source`, a new entry point: `AdmittedProspect` and `AdmittedProspectBatch`, with `admittedProspectSchema` and
+  `admittedProspectBatchSchema`; `RejectReason`; and `TitleFamilyTable` and `TitleFamilyTableRef`, with their
+  schemas under `schemas/source/`. Vectors under `conformance/source/`: `admitted-prospect-batch`, `admission-merge`,
+  `title-family` and `title-family-table`.
+
 ## 0.1.0 (2026-11-05)
 
 - Every entry point exports its majors as namespaces (`v1`) and the current major's names bare; no type name

@@ -1,0 +1,281 @@
+{
+  "conformance": "core.cost",
+  "version": "1.0.0",
+  "status": "ruled",
+  "basis": [
+    "What one metered call cost, in the shape of SalesBlaster's cost ledger. A metered port carries it on both result arms; null there means the call billed nothing."
+  ],
+  "rule": "valid: the value parses under costSchema. invalid: it breaks one of the four invariants (basis unknown exactly when units is null; units a non-negative integer; amount an unsigned decimal string; an amount needs currency and priceVersion), an enum, a type, or closure.",
+  "vectors": [
+    {
+      "id": "COST-01",
+      "input": {
+        "units": 3,
+        "unitKind": "credits",
+        "basis": "vendor_stated",
+        "amount": null,
+        "currency": null,
+        "priceVersion": null
+      },
+      "expect": {
+        "valid": true
+      },
+      "why": "vendor-stated count, no price yet"
+    },
+    {
+      "id": "COST-02",
+      "input": {
+        "units": null,
+        "unitKind": "credits",
+        "basis": "unknown",
+        "amount": null,
+        "currency": null,
+        "priceVersion": null
+      },
+      "expect": {
+        "valid": true
+      },
+      "why": "billed, count unknown"
+    },
+    {
+      "id": "COST-03",
+      "input": {
+        "units": 0,
+        "unitKind": "credits",
+        "basis": "presumed_per_call",
+        "amount": null,
+        "currency": null,
+        "priceVersion": null
+      },
+      "expect": {
+        "valid": true
+      },
+      "why": "zero is a count, not unknown"
+    },
+    {
+      "id": "COST-04",
+      "input": {
+        "units": 3,
+        "unitKind": "credits",
+        "basis": "vendor_stated",
+        "amount": "0.0042",
+        "currency": "USD",
+        "priceVersion": "p1"
+      },
+      "expect": {
+        "valid": true
+      },
+      "why": "a priced cost carries currency and price version"
+    },
+    {
+      "id": "COST-05",
+      "input": {
+        "units": 3,
+        "unitKind": "tokens",
+        "basis": "vendor_stated",
+        "amount": null,
+        "currency": null,
+        "priceVersion": null
+      },
+      "expect": {
+        "valid": true
+      },
+      "why": "tokens is a unit kind"
+    },
+    {
+      "id": "COST-06",
+      "input": {
+        "units": -1,
+        "unitKind": "credits",
+        "basis": "vendor_stated",
+        "amount": null,
+        "currency": null,
+        "priceVersion": null
+      },
+      "expect": {
+        "valid": false
+      },
+      "why": "negative units refused"
+    },
+    {
+      "id": "COST-07",
+      "input": {
+        "units": 1.5,
+        "unitKind": "credits",
+        "basis": "vendor_stated",
+        "amount": null,
+        "currency": null,
+        "priceVersion": null
+      },
+      "expect": {
+        "valid": false
+      },
+      "why": "fractional units refused"
+    },
+    {
+      "id": "COST-08",
+      "input": {
+        "units": 3,
+        "unitKind": "credits",
+        "basis": "vendor_stated",
+        "amount": "-0.5",
+        "currency": "USD",
+        "priceVersion": "p1"
+      },
+      "expect": {
+        "valid": false
+      },
+      "why": "a negative amount is refused"
+    },
+    {
+      "id": "COST-09",
+      "input": {
+        "units": 3,
+        "unitKind": "credits",
+        "basis": "vendor_stated",
+        "amount": "1e3",
+        "currency": "USD",
+        "priceVersion": "p1"
+      },
+      "expect": {
+        "valid": false
+      },
+      "why": "an amount is a plain decimal string"
+    },
+    {
+      "id": "COST-10",
+      "input": {
+        "units": null,
+        "unitKind": "credits",
+        "basis": "vendor_stated",
+        "amount": null,
+        "currency": null,
+        "priceVersion": null
+      },
+      "expect": {
+        "valid": false
+      },
+      "why": "null units need basis unknown"
+    },
+    {
+      "id": "COST-11",
+      "input": {
+        "units": 3,
+        "unitKind": "credits",
+        "basis": "unknown",
+        "amount": null,
+        "currency": null,
+        "priceVersion": null
+      },
+      "expect": {
+        "valid": false
+      },
+      "why": "basis unknown needs null units"
+    },
+    {
+      "id": "COST-12",
+      "input": {
+        "units": 3,
+        "unitKind": "credits",
+        "basis": "vendor_stated",
+        "amount": "1.00",
+        "currency": null,
+        "priceVersion": "p1"
+      },
+      "expect": {
+        "valid": false
+      },
+      "why": "an amount without currency is refused"
+    },
+    {
+      "id": "COST-13",
+      "input": {
+        "units": 3,
+        "unitKind": "credits",
+        "basis": "vendor_stated",
+        "amount": "1.00",
+        "currency": "USD",
+        "priceVersion": null
+      },
+      "expect": {
+        "valid": false
+      },
+      "why": "an amount without priceVersion is refused"
+    },
+    {
+      "id": "COST-14",
+      "input": {
+        "units": 3,
+        "unitKind": "dollars",
+        "basis": "vendor_stated",
+        "amount": null,
+        "currency": null,
+        "priceVersion": null
+      },
+      "expect": {
+        "valid": false
+      },
+      "why": "unknown unit kind"
+    },
+    {
+      "id": "COST-15",
+      "input": {
+        "units": 3,
+        "unitKind": "credits",
+        "basis": "estimated",
+        "amount": null,
+        "currency": null,
+        "priceVersion": null
+      },
+      "expect": {
+        "valid": false
+      },
+      "why": "unknown basis"
+    },
+    {
+      "id": "COST-16",
+      "input": {
+        "units": 3,
+        "unitKind": "credits",
+        "basis": "vendor_stated",
+        "amount": null,
+        "currency": null,
+        "priceVersion": null,
+        "vendorCharge": 7
+      },
+      "expect": {
+        "valid": false
+      },
+      "why": "closed: no extra member"
+    },
+    {
+      "id": "COST-17",
+      "input": {
+        "units": 3,
+        "unitKind": "credits",
+        "basis": "vendor_stated",
+        "amount": null,
+        "currency": null
+      },
+      "expect": {
+        "valid": false
+      },
+      "why": "every member is required, null when absent"
+    },
+    {
+      "id": "COST-18",
+      "input": {
+        "units": "3",
+        "unitKind": "credits",
+        "basis": "vendor_stated",
+        "amount": null,
+        "currency": null,
+        "priceVersion": null
+      },
+      "expect": {
+        "valid": false
+      },
+      "why": "units is a number, not a string"
+    }
+  ]
+}

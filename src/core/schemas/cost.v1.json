@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:core:cost:v1",
+  "type": "object",
+  "properties": {
+    "units": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "unitKind": {
+      "type": "string",
+      "enum": ["credits", "tokens", "runs", "rows"]
+    },
+    "basis": {
+      "type": "string",
+      "enum": ["vendor_stated", "presumed_per_call", "unknown"]
+    },
+    "amount": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d+)?$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "currency": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "priceVersion": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "units",
+    "unitKind",
+    "basis",
+    "amount",
+    "currency",
+    "priceVersion"
+  ],
+  "additionalProperties": false
+}

@@ -4,4 +4,5 @@ export * from './envelope.v1.js';
 export * from './grammar.v1.js';
 export * from './ids.v1.js';
 export * from './errors.v1.js';
+export * from './cost.v1.js';
 export type * from './types.v1.js';
