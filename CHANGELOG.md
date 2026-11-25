@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.3.0 (2026-11-24)
+
+Additive (minor): three new entry points, each with its record contracts and JSON Schemas. Every 0.2.0 file and name is
+unchanged.
+
+- `conversations`, a new entry point: `Conversation` and `ConversationMessage`, the record data of `conversation@1` and
+  its one child kind, with `conversationSchema` and `conversationMessageSchema`; `ConversationScope`, its membership
+  predicate, with `conversationScopeSchema`; `ConversationNotEmitted`, the collection manifest's aggregate, with
+  `conversationNotEmittedSchema`; and `conversationTypeFacts`. Schemas under `schemas/conversations/`:
+  `conversation`, `conversation-message`, `conversation-scope` and `conversation-not-emitted`.
+- `sdr`, a new entry point: `Classification`, the record data of `classification@1`, with `classificationSchema`;
+  `classificationLogicVersionSchema`; `ClassificationReportNotEmitted`, the per-reason count of verdicts not emitted,
+  whose home is the generating unit's commit subject line on the records ref, with
+  `classificationReportNotEmittedSchema`; `CLASSIFICATION_NOT_EMITTED_REASONS`, its reason tokens, with
+  `classificationNotEmittedReasonSchema`; `classificationReportNotEmittedReaderSchema` and
+  `ClassificationNotEmittedCounts`, the reader's open form (writer-closed, reader-open: a new token is an additive
+  minor); and `classificationTypeFacts`. Schemas under `schemas/sdr/`:
+  `classification` and `classification-report-not-emitted`.
+- `crm`, a new entry point: `Person`, `Organization` and `Deal`, the record data of `person@1`, `organization@1` and
+  `deal@1` (projections of the client's CRM), with `personSchema`, `organizationSchema` and `dealSchema`; their
+  membership predicates `PersonScope`, `OrganizationScope` and `DealScope`, with their schemas; `isDealInScope`, the
+  reference reading of `DealScope` (its `pipelines`, `labels`, `cohort_equals` and `cohort_prefix`, against the deal's
+  `cohort`); `ExternalRef`, with
+  `externalRefSchema`; and `personTypeFacts`, `organizationTypeFacts` and `dealTypeFacts`. Schemas under
+  `schemas/crm/`: `person`, `person-scope`, `organization`, `organization-scope`, `deal` and `deal-scope`.
+- `crm`'s `person@1` also carries every contact point its CRM holds: `full_name`, and
+  `contact_points`, each a `PersonContactPoint` (`type`, `handle`, `provenance`, `primary`, `label`), the observed part
+  of the canonical contact-point model's ContactPoint. Its cross-field rules are the ruled vectors `conformance/crm/person.v1.json`.
+- `source` gains `CONTACT_POINT_TYPES`, `ContactPointType` and `contactPointTypeSchema`: the canonical model's closed
+  contact-point type enum, in its one published home.
+- Documentation: 0.2.0's note on `costSchema` now says which of its four invariants the JSON Schema states (the two
+  per-field ones) and where the cross-field pair is (the vectors). No file or name changes.
+
 ## 0.2.0 (2026-11-15)
 
 Additive (minor): two new entry points, new shapes and ports in `core` and `enrich`, and new conformance vectors. Every
@@ -8,7 +41,8 @@ Additive (minor): two new entry points, new shapes and ports in `core` and `enri
 - `core`: `PortResult<T>`, a port's answer (a value or a `PortError`; a port never throws across the seam), and
   `MeteredPortResult<T>`, whose two arms both carry a required `cost: Cost | null` (`null` means the call billed
   nothing). `Cost`, `CostUnitKind` and `CostBasis`, with `costSchema` (`schemas/core/cost.v1.json`) and its vectors
-  (`conformance/core/cost.v1.json`). The schema refuses a value that breaks any of its four invariants.
+  (`conformance/core/cost.v1.json`). `costSchema` refuses a value that breaks any of its four invariants; the JSON
+  Schema states the two per-field ones, and the cross-field pair is in the vectors.
 - `enrich`: `VerificationProviderPort`, a metered port with one verdict per distinct submitted address. An address
   the vendor did not answer is `unknown`, never absent. `EmailVerificationVerdict`; `checkVerificationVerdicts`, a
   check of an adapter's verdicts against the submitted addresses; and `verdictForKey`, one email-account-key's

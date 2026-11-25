@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:conversations:conversation-message:v1",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^k(0|[1-9][0-9]*)_[0-9a-f]{32}$"
+    },
+    "direction": {
+      "type": "string",
+      "enum": ["inbound", "outbound"]
+    },
+    "content": {
+      "type": "string"
+    },
+    "format": {
+      "type": "string",
+      "enum": ["text", "audio", "image", "video"]
+    },
+    "sender_identifier": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sender_display_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sender_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "occurred_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+    },
+    "via": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "id",
+    "direction",
+    "content",
+    "format",
+    "sender_identifier",
+    "sender_type",
+    "occurred_at"
+  ],
+  "additionalProperties": false
+}

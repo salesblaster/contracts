@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:sdr:classification:v1",
+  "type": "object",
+  "properties": {
+    "label_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subtype": {
+      "type": "string",
+      "minLength": 1
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "DESIRED",
+        "RETRIABLE",
+        "REDIRECTABLE",
+        "TERMINAL_NEGATIVE",
+        "TERMINAL_NEUTRAL"
+      ]
+    },
+    "sentiment": {
+      "type": "string",
+      "enum": ["positive", "neutral", "negative"]
+    },
+    "suppress_org_wide": {
+      "type": "boolean"
+    },
+    "forced_suppression_phrase": {
+      "type": "string",
+      "minLength": 1
+    },
+    "confidence": {
+      "type": "string",
+      "pattern": "^(?:0(?:\\.[0-9]+)?|1(?:\\.0+)?)$"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "needs_human_review": {
+      "type": "boolean"
+    },
+    "review_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "source": {
+      "type": "string",
+      "const": "internal_llm"
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "prompt_name": {
+      "type": "string",
+      "pattern": "^(?!unknown$)[^@\\s]+$"
+    },
+    "prompt_version": {
+      "type": "string",
+      "pattern": "^(?!unknown$)(?!committed)[^@\\s]+$"
+    }
+  },
+  "required": [
+    "label_key",
+    "category",
+    "sentiment",
+    "suppress_org_wide",
+    "confidence",
+    "reason",
+    "needs_human_review",
+    "review_reasons",
+    "source",
+    "prompt_name",
+    "prompt_version"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:sdr:classification-report-not-emitted:v1",
+  "type": "object",
+  "properties": {
+    "classification_without_logic_version": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    }
+  },
+  "required": ["classification_without_logic_version"],
+  "additionalProperties": false
+}

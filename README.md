@@ -17,10 +17,13 @@ scoring weight or threshold.
 | `@salesblaster/contracts/enrich` | `Lead` and `VerifiedLead`, the one lead shape and the lead with its email verdict; `LeadScored`, the payload of `lead.scored.v1`; `RubricBands`, the labels a rubric version declares; `GraderCalibration`, the bar table for one grader configuration; and the calibration predicate `checkCalibration` (with `isCalibrated` and `graderConfigurationOf`), which takes a score's own grades |
 | `@salesblaster/contracts/source` | `AdmittedProspect` and `AdmittedProspectBatch`, one lead as admission hands it to enrichment and the batch that carries it; `RejectReason`; and `TitleFamilyTable` and its reference, the declared, versioned table a job title's buyer family is derived by |
 | `@salesblaster/contracts/campaigns` | the sequencer ports as one runtime splits them (lead upload, launch, transition between campaigns, suppression mirror), with predicates over an adapter's upload and blocklist answers |
+| `@salesblaster/contracts/conversations` | `Conversation`, the record data of `conversation@1`, with its one child kind `ConversationMessage`; `ConversationScope`, its membership predicate; `ConversationNotEmitted`, the collection manifest's count of what had no handle; and `conversationTypeFacts`, the type's facts as data |
+| `@salesblaster/contracts/sdr` | `Classification`, the record data of `classification@1`, a generated record; `classificationLogicVersionSchema`, the grammar of its derived id's `logic_version`; `ClassificationReportNotEmitted` and `CLASSIFICATION_NOT_EMITTED_REASONS`, the per-reason count of verdicts with no version and its reason tokens, carried in the generating unit's commit subject line on the records ref (writer-closed; `classificationReportNotEmittedReaderSchema` is the reader's open form); and `classificationTypeFacts`, the type's facts as data |
+| `@salesblaster/contracts/crm` | `Person`, `Organization` and `Deal`, the record data of `person@1`, `organization@1` and `deal@1`, projections of the client's CRM; `ExternalRef`, the source handle each carries; each type's membership predicate (`PersonScope`, `OrganizationScope`, `DealScope`); and `personTypeFacts`, `organizationTypeFacts` and `dealTypeFacts`, the types' facts as data |
 | `@salesblaster/contracts/schemas/<context>/<schema>.v<major>.json` | the generated JSON Schemas |
 | `@salesblaster/contracts/conformance/<context>/<name>.v<major>.json` | conformance vectors: inputs and expected results a runtime must reproduce |
 
-More contexts (`sdr`, `crm`) are added as they are published.
+More contexts are added as they are published.
 
 ## Names and majors
 

@@ -1,0 +1,331 @@
+{
+  "conformance": "crm.person",
+  "version": "1.0.0",
+  "status": "ruled",
+  "basis": [
+    "person@1's contact-point invariants, which a JSON Schema cannot state"
+  ],
+  "rule": "non_blank_handle: every contact point's handle has a non-space character. one_primary_per_type: at most one contact point of each type has primary true. primary_email_shape: the primary email contact point's handle contains an at sign and no whitespace. scalar_is_primary_handle: when contact_points is present, email, phone and linkedin_url are each present if and only if their type (email, phone, linkedin) has a primary contact point, and then equal its handle exactly. A runtime passes when its check of the input gives expect: holds, or a broken rule, checked in the order non_blank_handle, one_primary_per_type, primary_email_shape, scalar_is_primary_handle.",
+  "vectors": [
+    {
+      "id": "P-01",
+      "input": {
+        "external_refs": [
+          {
+            "external_id": "17",
+            "kind": "person",
+            "provider": "examplecrm"
+          }
+        ],
+        "source_changed_at": "2026-11-20T09:00:00.000Z",
+        "first_name": "Ada",
+        "email": "ada@example.com"
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "no contact_points: the scalars stand on their own, as before"
+    },
+    {
+      "id": "P-02",
+      "input": {
+        "external_refs": [
+          {
+            "external_id": "17",
+            "kind": "person",
+            "provider": "examplecrm"
+          }
+        ],
+        "source_changed_at": "2026-11-20T09:00:00.000Z",
+        "first_name": "Ada",
+        "last_name": "Lovelace",
+        "full_name": "Ada Lovelace",
+        "email": "ada@example.com",
+        "phone": "+44 20 0000 0000",
+        "linkedin_url": "https://www.linkedin.com/in/example",
+        "contact_points": [
+          {
+            "type": "email",
+            "handle": "ada@example.com",
+            "provenance": "unknown",
+            "primary": true,
+            "label": "work"
+          },
+          {
+            "type": "email",
+            "handle": "ada.home@example.org",
+            "provenance": "unknown",
+            "primary": false,
+            "label": "home"
+          },
+          {
+            "type": "phone",
+            "handle": "+44 20 0000 0000",
+            "provenance": "unknown",
+            "primary": true,
+            "label": "work"
+          },
+          {
+            "type": "phone",
+            "handle": "07700 900000",
+            "provenance": "unknown",
+            "label": "mobile"
+          },
+          {
+            "type": "linkedin",
+            "handle": "https://www.linkedin.com/in/example",
+            "provenance": "unknown",
+            "primary": true
+          }
+        ]
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "every email and phone, one primary of each type, and each scalar the primary's handle exactly"
+    },
+    {
+      "id": "P-03",
+      "input": {
+        "external_refs": [
+          {
+            "external_id": "17",
+            "kind": "person",
+            "provider": "examplecrm"
+          }
+        ],
+        "source_changed_at": "2026-11-20T09:00:00.000Z",
+        "contact_points": [
+          {
+            "type": "email",
+            "handle": "ada@example.com",
+            "provenance": "unknown"
+          },
+          {
+            "type": "email",
+            "handle": "ada.home@example.org",
+            "provenance": "unknown"
+          }
+        ]
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "a list the CRM marks no primary in: no primary, so no scalar email; the adapter never picks one"
+    },
+    {
+      "id": "P-04",
+      "input": {
+        "external_refs": [
+          {
+            "external_id": "17",
+            "kind": "person",
+            "provider": "examplecrm"
+          }
+        ],
+        "source_changed_at": "2026-11-20T09:00:00.000Z",
+        "email": "ada@example.com",
+        "contact_points": [
+          {
+            "type": "email",
+            "handle": "ada@example.com",
+            "provenance": "unknown",
+            "primary": true
+          },
+          {
+            "type": "email",
+            "handle": "not an address",
+            "provenance": "unknown"
+          }
+        ]
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "a malformed non-primary email is stored exactly as held; judging it is the Identity context's normalizer's"
+    },
+    {
+      "id": "P-05",
+      "input": {
+        "external_refs": [
+          {
+            "external_id": "17",
+            "kind": "person",
+            "provider": "examplecrm"
+          }
+        ],
+        "source_changed_at": "2026-11-20T09:00:00.000Z",
+        "phone": "+1 (305) 555-0123",
+        "contact_points": [
+          {
+            "type": "phone",
+            "handle": "+1 (305) 555-0123",
+            "provenance": "observed",
+            "primary": true
+          }
+        ]
+      },
+      "expect": {
+        "holds": true
+      },
+      "why": "a phone is kept exactly as held, never normalized to E.164"
+    },
+    {
+      "id": "P-06",
+      "input": {
+        "external_refs": [
+          {
+            "external_id": "17",
+            "kind": "person",
+            "provider": "examplecrm"
+          }
+        ],
+        "source_changed_at": "2026-11-20T09:00:00.000Z",
+        "contact_points": [
+          {
+            "type": "email",
+            "handle": "   ",
+            "provenance": "unknown"
+          }
+        ]
+      },
+      "expect": {
+        "violates": "non_blank_handle"
+      },
+      "why": "a blank CRM value yields no entry, never an entry with a blank handle"
+    },
+    {
+      "id": "P-07",
+      "input": {
+        "external_refs": [
+          {
+            "external_id": "17",
+            "kind": "person",
+            "provider": "examplecrm"
+          }
+        ],
+        "source_changed_at": "2026-11-20T09:00:00.000Z",
+        "email": "ada@example.com",
+        "contact_points": [
+          {
+            "type": "email",
+            "handle": "ada@example.com",
+            "provenance": "unknown",
+            "primary": true
+          },
+          {
+            "type": "email",
+            "handle": "ada.home@example.org",
+            "provenance": "unknown",
+            "primary": true
+          }
+        ]
+      },
+      "expect": {
+        "violates": "one_primary_per_type"
+      },
+      "why": "two primaries of one type: the record cannot say which is primary"
+    },
+    {
+      "id": "P-08",
+      "input": {
+        "external_refs": [
+          {
+            "external_id": "17",
+            "kind": "person",
+            "provider": "examplecrm"
+          }
+        ],
+        "source_changed_at": "2026-11-20T09:00:00.000Z",
+        "contact_points": [
+          {
+            "type": "email",
+            "handle": "not an address",
+            "provenance": "unknown",
+            "primary": true
+          }
+        ]
+      },
+      "expect": {
+        "violates": "primary_email_shape"
+      },
+      "why": "the primary email is the scalar email, so it must be an address"
+    },
+    {
+      "id": "P-09",
+      "input": {
+        "external_refs": [
+          {
+            "external_id": "17",
+            "kind": "person",
+            "provider": "examplecrm"
+          }
+        ],
+        "source_changed_at": "2026-11-20T09:00:00.000Z",
+        "email": "ada@example.com",
+        "contact_points": [
+          {
+            "type": "email",
+            "handle": "ada@example.com",
+            "provenance": "unknown"
+          }
+        ]
+      },
+      "expect": {
+        "violates": "scalar_is_primary_handle"
+      },
+      "why": "a scalar email with no primary email entry: the adapter picked one"
+    },
+    {
+      "id": "P-10",
+      "input": {
+        "external_refs": [
+          {
+            "external_id": "17",
+            "kind": "person",
+            "provider": "examplecrm"
+          }
+        ],
+        "source_changed_at": "2026-11-20T09:00:00.000Z",
+        "email": "ada.home@example.org",
+        "contact_points": [
+          {
+            "type": "email",
+            "handle": "ada@example.com",
+            "provenance": "unknown",
+            "primary": true
+          }
+        ]
+      },
+      "expect": {
+        "violates": "scalar_is_primary_handle"
+      },
+      "why": "a scalar that differs from its type's primary handle"
+    },
+    {
+      "id": "P-11",
+      "input": {
+        "external_refs": [
+          {
+            "external_id": "17",
+            "kind": "person",
+            "provider": "examplecrm"
+          }
+        ],
+        "source_changed_at": "2026-11-20T09:00:00.000Z",
+        "contact_points": [
+          {
+            "type": "linkedin",
+            "handle": "https://www.linkedin.com/in/example",
+            "provenance": "unknown",
+            "primary": true
+          }
+        ]
+      },
+      "expect": {
+        "violates": "scalar_is_primary_handle"
+      },
+      "why": "a primary linkedin entry with no linkedin_url: the two readings would disagree"
+    }
+  ]
+}

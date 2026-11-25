@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:crm:organization-scope:v1",
+  "type": "object",
+  "properties": {
+    "linked_to": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]{0,62}$"
+      }
+    }
+  },
+  "required": ["linked_to"],
+  "additionalProperties": false
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:salesblaster:contracts:crm:deal-scope:v1",
+  "type": "object",
+  "properties": {
+    "pipelines": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "labels": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "cohort_equals": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "cohort_prefix": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": ["pipelines"],
+  "additionalProperties": false
+}
